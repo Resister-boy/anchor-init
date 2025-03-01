@@ -1,0 +1,26 @@
+{
+  "address": "5qrApbBfGrQMmeUjwFmj2d728J4htrFtQzBCe5mzUKaD",
+  "metadata": {
+    "name": "solfai_manager",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "initialize",
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [],
+      "args": []
+    }
+  ]
+}

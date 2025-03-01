@@ -216,13 +216,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "anchorinit"
-version = "0.1.0"
-dependencies = [
- "anchor-lang",
-]
-
-[[package]]
 name = "anyhow"
 version = "1.0.86"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1590,6 +1583,13 @@ dependencies = [
  "quote",
  "rustversion",
  "syn 2.0.72",
+]
+
+[[package]]
+name = "solfai_manager"
+version = "0.1.0"
+dependencies = [
+ "anchor-lang",
 ]
 
 [[package]]
