@@ -14,19 +14,78 @@ export type SolfaiManager = {
   },
   "instructions": [
     {
-      "name": "initialize",
+      "name": "fundEtfToken",
       "discriminator": [
-        175,
-        175,
-        109,
-        31,
-        13,
-        152,
-        155,
-        237
+        111,
+        102,
+        83,
+        123,
+        251,
+        203,
+        6,
+        191
       ],
-      "accounts": [],
+      "accounts": [
+        {
+          "name": "creator",
+          "writable": true,
+          "signer": true
+        }
+      ],
       "args": []
+    },
+    {
+      "name": "initializeConfig",
+      "discriminator": [
+        208,
+        127,
+        21,
+        1,
+        194,
+        190,
+        196,
+        70
+      ],
+      "accounts": [
+        {
+          "name": "admin",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initializeEtfTokenVault",
+      "discriminator": [
+        190,
+        21,
+        22,
+        248,
+        28,
+        170,
+        100,
+        199
+      ],
+      "accounts": [
+        {
+          "name": "creator",
+          "writable": true,
+          "signer": true
+        }
+      ],
+      "args": []
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "invalidConfigState",
+      "msg": "Invalid config state"
     }
   ]
 };

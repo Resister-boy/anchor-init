@@ -13,9 +13,25 @@ describe('solfai_manager', () => {
 
   // const solfaiManagerKeypair = Keypair.generate()
 
-  it('Initialize SolfaiManager', async () => {
+  it('Initialize Program Config', async () => {
     const tx = await program.methods
-      .initialize()
+      .initializeConfig()
+      .rpc()
+
+      console.log('tx: ', tx)
+  })
+
+  it('Initialize etf token vault', async () => {
+    const tx = await program.methods
+      .initializeEtfTokenVault()
+      .rpc()
+
+      console.log('tx: ', tx)
+  })
+
+  it('add etf token', async () => {
+    const tx = await program.methods
+      .fundEtfToken()
       .rpc()
 
       console.log('tx: ', tx)
