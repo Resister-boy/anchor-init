@@ -108,6 +108,10 @@ export type SolfaiManager = {
           "writable": true
         },
         {
+          "name": "etfTokenMint",
+          "writable": true
+        },
+        {
           "name": "programState",
           "writable": true,
           "pda": {
@@ -132,6 +136,10 @@ export type SolfaiManager = {
               }
             ]
           }
+        },
+        {
+          "name": "tokenProgram",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
         {
           "name": "systemProgram",
@@ -230,6 +238,10 @@ export type SolfaiManager = {
           {
             "name": "status",
             "type": "u8"
+          },
+          {
+            "name": "etfTokenMint",
+            "type": "pubkey"
           },
           {
             "name": "bump",

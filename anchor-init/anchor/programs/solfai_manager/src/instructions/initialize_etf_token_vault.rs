@@ -1,4 +1,7 @@
 use anchor_lang::prelude::*;
+use anchor_spl::{
+    token::{Mint, Token, TokenAccount},
+};
 
 use crate::errors::SolfaiManagerError;
 use crate::state::ProgramState;
@@ -24,12 +27,27 @@ pub struct InitializeEtfTokenVault<'info> {
     pub etf_vault: Account<'info, EtfTokenVault>,
 
     #[account(
+        init,
+        payer = creator,
+        seeds = [
+            b"etf_token_mint",
+            (program_state.etf_token_count + 1).to_le_bytes().as_ref(),
+        ],
+        bump,
+        mint::decimals = 6,
+        mint::authority = etf_vault,
+        // mint::freeze_authority = etf_vault,
+    )]
+    pub etf_token_mint: Account<'info, Mint>,
+
+    #[account(
         mut,
         seeds = [b"program_state".as_ref()],
         bump = program_state.bump,
     )]
     pub program_state: Account<'info, ProgramState>,
-
+    
+    pub token_program: Program<'info, Token>,
     pub system_program: Program<'info, System>,
 }
 
@@ -48,11 +66,12 @@ impl<'info> InitializeEtfTokenVault<'info> {
         if funding_goal < FUNDING_MINIMUM {
             return Err(SolfaiManagerError::InvalidEtfVaultFundingGoal.into());
         };
-
+        
         self.etf_vault.set_inner(EtfTokenVault {
             id: self.program_state.etf_token_count + 1,
             creator: self.creator.key(),
             etf_name,
+            etf_token_mint: self.etf_token_mint.key(),
             description,
             funded_amount: 0,
             funding_goal,

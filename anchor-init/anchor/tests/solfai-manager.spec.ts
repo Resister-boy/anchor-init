@@ -1,7 +1,7 @@
 import * as anchor from '@coral-xyz/anchor'
-import {Program} from '@coral-xyz/anchor'
-import {Keypair, SystemProgram} from '@solana/web3.js'
-import {SolfaiManager} from '../target/types/solfai_manager'
+import { Program } from '@coral-xyz/anchor'
+import { Keypair, SystemProgram } from '@solana/web3.js'
+import { SolfaiManager } from '../target/types/solfai_manager'
 
 describe('solfai_manager', () => {
   // Configure the client to use the local cluster.
@@ -27,14 +27,14 @@ describe('solfai_manager', () => {
       .signers([admin])
       .rpc()
 
-      console.log('tx: ', tx)
-      
-      let [programStatePda, _] = anchor.web3.PublicKey.findProgramAddressSync(
-        [Buffer.from("prograrm_state")],
-        program.programId
-      );
-      const programState = await program.account.programState.fetch(programStatePda);
-      console.log('PROGRAM STATE: ', programState)
+    console.log('tx: ', tx)
+
+    let [programStatePda, _] = anchor.web3.PublicKey.findProgramAddressSync(
+      [Buffer.from("program_state")],
+      program.programId
+    );
+    const programState = await program.account.programState.fetch(programStatePda);
+    console.log('PROGRAM STATE: ', programState)
   })
 
   it('As a creator, I can initialize an etf token vault', async () => {
@@ -53,6 +53,11 @@ describe('solfai_manager', () => {
       program.programId
     );
 
+    let [mint, mintBump] = anchor.web3.PublicKey.findProgramAddressSync(
+      [Buffer.from("etf_token_mint"), new anchor.BN(ETF_VAULT_ID).toArrayLike(Buffer, "le", 8)],
+      program.programId
+    );
+
     const tx = await program.methods
       .initializeEtfTokenVault(
         "$COOCIE",
@@ -62,15 +67,28 @@ describe('solfai_manager', () => {
       .accounts({
         creator: etfCreator1Keypair.publicKey,
         etfVault: etfVaultPda,
+        etfTokenMint: mint,
       })
       .signers([etfCreator1Keypair])
       .rpc()
 
-      console.log('tx: ', tx)
+    console.log('tx: ', tx)
 
-      const etfVault = await program.account.etfTokenVault.fetch(etfVaultPda);
-      console.log('ETF TOKEN VAULT: ', etfVault)
+    const etfVault = await program.account.etfTokenVault.fetch(etfVaultPda);
+    console.log('ETF TOKEN VAULT: ', etfVault)
+
+    console.log('ETF MINT: ', mint.toString())
   })
+
+
+  // it('As a user, I can get program state', async () => {
+  //   let [programStatePda, _] = anchor.web3.PublicKey.findProgramAddressSync(
+  //     [Buffer.from("program_state")],
+  //     program.programId
+  //   );
+  //   const programState = await program.account.programState.fetch(programStatePda);
+  //   console.log('PROGRAM STATE: ', programState)
+  // })
 
   it('As a user, I can get all etf token vaults', async () => {
     const allVaults = await fetchAllEtfTokenVaults(program);
@@ -81,7 +99,7 @@ describe('solfai_manager', () => {
 export async function airdrop(
   connection: any,
   address: any,
-  amount = 500_000_000_000
+  amount = 500_000_000_000 // 500 SOL
 ) {
   await connection.confirmTransaction(
     await connection.requestAirdrop(address, amount),
@@ -109,6 +127,7 @@ interface EtfTokenVault {
   id: number;
   creator: string;
   etfName: string;
+  etfMint: string;
   description: string;
   fundedAmount: number;
   fundingGoal: number;
@@ -117,15 +136,16 @@ interface EtfTokenVault {
   status: number;
 }
 
-const serializedVaults = (vaults: any[]): EtfTokenVault[] => 
+const serializedVaults = (vaults: any[]): EtfTokenVault[] =>
   vaults.map((v: any) => ({
-   id: v.account.id.toNumber(),
-   creator: v.account.creator.toBase58(),
-   etfName: v.account.etfName,
-   description: v.account.description,
-   fundedAmount: v.account.fundedAmount.toNumber(),
-   fundingGoal: v.account.fundingGoal.toNumber(),
-   fundingStartTime: v.account.fundingStartTime,
-   fundingUserCount: v.account.fundingUserCount.toNumber(),
-   status: v.account.status,
-}));
+    id: v.account.id.toNumber(),
+    creator: v.account.creator.toBase58(),
+    etfName: v.account.etfName,
+    etfMint: v.account.etfTokenMint.toBase58(),
+    description: v.account.description,
+    fundedAmount: v.account.fundedAmount.toNumber(),
+    fundingGoal: v.account.fundingGoal.toNumber(),
+    fundingStartTime: v.account.fundingStartTime,
+    fundingUserCount: v.account.fundingUserCount.toNumber(),
+    status: v.account.status,
+  }));

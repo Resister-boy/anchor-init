@@ -24,7 +24,7 @@ pub struct EtfTokenVault {
 
     pub status: u8, // 0: funding, 1: operating, 2: terminated
     
-    // token metadata?
+    pub etf_token_mint: Pubkey,
     
     pub bump: u8,
 }

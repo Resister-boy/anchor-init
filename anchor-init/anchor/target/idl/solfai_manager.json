@@ -102,6 +102,10 @@
           "writable": true
         },
         {
+          "name": "etf_token_mint",
+          "writable": true
+        },
+        {
           "name": "program_state",
           "writable": true,
           "pda": {
@@ -126,6 +130,10 @@
               }
             ]
           }
+        },
+        {
+          "name": "token_program",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
         },
         {
           "name": "system_program",
@@ -224,6 +232,10 @@
           {
             "name": "status",
             "type": "u8"
+          },
+          {
+            "name": "etf_token_mint",
+            "type": "pubkey"
           },
           {
             "name": "bump",
