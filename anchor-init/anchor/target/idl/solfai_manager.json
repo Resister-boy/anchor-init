@@ -47,19 +47,26 @@
           "signer": true
         },
         {
-          "name": "program_config",
+          "name": "program_state",
           "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "const",
                 "value": [
-                  99,
+                  112,
+                  114,
                   111,
-                  110,
-                  102,
-                  105,
-                  103
+                  103,
+                  114,
+                  97,
+                  109,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
                 ]
               }
             ]
@@ -89,36 +96,144 @@
           "name": "creator",
           "writable": true,
           "signer": true
+        },
+        {
+          "name": "etf_vault",
+          "writable": true
+        },
+        {
+          "name": "program_state",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  103,
+                  114,
+                  97,
+                  109,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "etf_name",
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "name": "funding_goal",
+          "type": "u64"
+        }
+      ]
     }
   ],
   "accounts": [
     {
-      "name": "ProgramConfig",
+      "name": "EtfTokenVault",
       "discriminator": [
-        196,
-        210,
-        90,
+        70,
+        242,
         231,
-        144,
+        185,
+        71,
+        199,
+        212,
+        215
+      ]
+    },
+    {
+      "name": "ProgramState",
+      "discriminator": [
+        77,
+        209,
+        137,
+        229,
         149,
-        140,
-        63
+        67,
+        167,
+        230
       ]
     }
   ],
   "errors": [
     {
       "code": 6000,
-      "name": "InvalidConfigState",
-      "msg": "Invalid config state"
+      "name": "InvalidEtfVaultFundingGoal",
+      "msg": "Invalid etf vault funding goal"
     }
   ],
   "types": [
     {
-      "name": "ProgramConfig",
+      "name": "EtfTokenVault",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "id",
+            "type": "u64"
+          },
+          {
+            "name": "creator",
+            "type": "pubkey"
+          },
+          {
+            "name": "etf_name",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "name": "funded_amount",
+            "type": "u64"
+          },
+          {
+            "name": "funding_goal",
+            "type": "u64"
+          },
+          {
+            "name": "funding_start_time",
+            "type": "u64"
+          },
+          {
+            "name": "funding_user_count",
+            "type": "u64"
+          },
+          {
+            "name": "status",
+            "type": "u8"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "ProgramState",
       "type": {
         "kind": "struct",
         "fields": [

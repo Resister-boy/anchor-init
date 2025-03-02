@@ -4,7 +4,10 @@ use anchor_lang::prelude::*;
 pub struct FundEtfToken<'info> {
     #[account(mut)]
     pub creator: Signer<'info>,
+
+    
 }
+
 
 impl<'info> FundEtfToken<'info> {
     pub fn fund_etf_token(&mut self) -> Result<()> {
@@ -15,4 +18,3 @@ impl<'info> FundEtfToken<'info> {
         Ok(())
     }
 }
-

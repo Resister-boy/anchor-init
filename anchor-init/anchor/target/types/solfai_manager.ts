@@ -53,19 +53,26 @@ export type SolfaiManager = {
           "signer": true
         },
         {
-          "name": "programConfig",
+          "name": "programState",
           "writable": true,
           "pda": {
             "seeds": [
               {
                 "kind": "const",
                 "value": [
-                  99,
+                  112,
+                  114,
                   111,
-                  110,
-                  102,
-                  105,
-                  103
+                  103,
+                  114,
+                  97,
+                  109,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
                 ]
               }
             ]
@@ -95,36 +102,144 @@ export type SolfaiManager = {
           "name": "creator",
           "writable": true,
           "signer": true
+        },
+        {
+          "name": "etfVault",
+          "writable": true
+        },
+        {
+          "name": "programState",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  112,
+                  114,
+                  111,
+                  103,
+                  114,
+                  97,
+                  109,
+                  95,
+                  115,
+                  116,
+                  97,
+                  116,
+                  101
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
         }
       ],
-      "args": []
+      "args": [
+        {
+          "name": "etfName",
+          "type": "string"
+        },
+        {
+          "name": "description",
+          "type": "string"
+        },
+        {
+          "name": "fundingGoal",
+          "type": "u64"
+        }
+      ]
     }
   ],
   "accounts": [
     {
-      "name": "programConfig",
+      "name": "etfTokenVault",
       "discriminator": [
-        196,
-        210,
-        90,
+        70,
+        242,
         231,
-        144,
+        185,
+        71,
+        199,
+        212,
+        215
+      ]
+    },
+    {
+      "name": "programState",
+      "discriminator": [
+        77,
+        209,
+        137,
+        229,
         149,
-        140,
-        63
+        67,
+        167,
+        230
       ]
     }
   ],
   "errors": [
     {
       "code": 6000,
-      "name": "invalidConfigState",
-      "msg": "Invalid config state"
+      "name": "invalidEtfVaultFundingGoal",
+      "msg": "Invalid etf vault funding goal"
     }
   ],
   "types": [
     {
-      "name": "programConfig",
+      "name": "etfTokenVault",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "id",
+            "type": "u64"
+          },
+          {
+            "name": "creator",
+            "type": "pubkey"
+          },
+          {
+            "name": "etfName",
+            "type": "string"
+          },
+          {
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "name": "fundedAmount",
+            "type": "u64"
+          },
+          {
+            "name": "fundingGoal",
+            "type": "u64"
+          },
+          {
+            "name": "fundingStartTime",
+            "type": "u64"
+          },
+          {
+            "name": "fundingUserCount",
+            "type": "u64"
+          },
+          {
+            "name": "status",
+            "type": "u8"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "programState",
       "type": {
         "kind": "struct",
         "fields": [

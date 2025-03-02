@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-use crate::state::ProgramConfig;
+use crate::state::ProgramState;
 
 #[derive(Accounts)]
 pub struct InitializeConfig<'info> {
@@ -10,11 +10,11 @@ pub struct InitializeConfig<'info> {
     #[account(
         init,
         payer = admin,
-        space = 8 + ProgramConfig::INIT_SPACE,
-        seeds = [b"config".as_ref()],
+        space = 8 + ProgramState::INIT_SPACE,
+        seeds = [b"program_state".as_ref()],
         bump,
     )]
-    pub program_config: Account<'info, ProgramConfig>,
+    pub program_state: Account<'info, ProgramState>,
 
     pub system_program: Program<'info, System>,
 }
@@ -23,10 +23,10 @@ impl<'info> InitializeConfig<'info> {
     pub fn initialize_config(&mut self, bumps: &InitializeConfigBumps) -> Result<()> {
         dbg!("initialize config");
 
-        self.program_config.set_inner(ProgramConfig {
+        self.program_state.set_inner(ProgramState {
             admin: self.admin.key(),
             etf_token_count: 0,
-            bump: bumps.program_config,
+            bump: bumps.program_state,
         });
 
         Ok(())
