@@ -25,13 +25,7 @@ export type SolfaiManager = {
         6,
         191
       ],
-      "accounts": [
-        {
-          "name": "creator",
-          "writable": true,
-          "signer": true
-        }
-      ],
+      "accounts": [],
       "args": []
     },
     {
@@ -112,6 +106,41 @@ export type SolfaiManager = {
           "writable": true
         },
         {
+          "name": "etfTokenMetadata",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  116,
+                  102,
+                  95,
+                  116,
+                  111,
+                  107,
+                  101,
+                  110,
+                  95,
+                  109,
+                  101,
+                  116,
+                  97,
+                  100,
+                  97,
+                  116,
+                  97
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "etfTokenMint"
+              }
+            ]
+          }
+        },
+        {
           "name": "programState",
           "writable": true,
           "pda": {
@@ -152,6 +181,14 @@ export type SolfaiManager = {
           "type": "string"
         },
         {
+          "name": "etfTokenSymbol",
+          "type": "string"
+        },
+        {
+          "name": "etfTokenUri",
+          "type": "string"
+        },
+        {
           "name": "description",
           "type": "string"
         },
@@ -163,6 +200,19 @@ export type SolfaiManager = {
     }
   ],
   "accounts": [
+    {
+      "name": "etfTokenMetadata",
+      "discriminator": [
+        93,
+        233,
+        98,
+        68,
+        15,
+        3,
+        58,
+        176
+      ]
+    },
     {
       "name": "etfTokenVault",
       "discriminator": [
@@ -198,6 +248,26 @@ export type SolfaiManager = {
     }
   ],
   "types": [
+    {
+      "name": "etfTokenMetadata",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "symbol",
+            "type": "string"
+          },
+          {
+            "name": "uri",
+            "type": "string"
+          },
+          {
+            "name": "mint",
+            "type": "pubkey"
+          }
+        ]
+      }
+    },
     {
       "name": "etfTokenVault",
       "type": {

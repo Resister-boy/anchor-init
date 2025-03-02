@@ -60,7 +60,9 @@ describe('solfai_manager', () => {
 
     const tx = await program.methods
       .initializeEtfTokenVault(
-        "$COOCIE",
+        "COOCIE ETF",
+        "COOCIE",
+        "https://old.captaincompliance.com/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2Fdabdcq5u%2Fproduction%2Fec6ca5585814616098ef197f2215567cfb5bf52d-2000x1200.png&w=1920&q=75",
         "COOCIE is a new ETF token on Solana",
         new anchor.BN(20_000_000_000), // 20 SOL
       )
@@ -94,6 +96,11 @@ describe('solfai_manager', () => {
     const allVaults = await fetchAllEtfTokenVaults(program);
     console.log('ALL ETF VAULTS: ', allVaults)
   })
+
+  it('As a user, I can get all etf token metadata', async () => {
+    const metadata = await fetchAllEtfTokenMetadata(program);
+    console.log('ALL ETF METADATA: ', metadata)
+  })
 })
 
 export async function airdrop(
@@ -120,7 +127,7 @@ export const fetchAllEtfTokenVaults = async (
 
   const allVaultAccounts = await program.account.etfTokenVault.all();
 
-  return serializedVaults(allVaultAccounts);
+  return deserializeVaults(allVaultAccounts);
 }
 
 interface EtfTokenVault {
@@ -136,7 +143,7 @@ interface EtfTokenVault {
   status: number;
 }
 
-const serializedVaults = (vaults: any[]): EtfTokenVault[] =>
+const deserializeVaults = (vaults: any[]): EtfTokenVault[] =>
   vaults.map((v: any) => ({
     id: v.account.id.toNumber(),
     creator: v.account.creator.toBase58(),
@@ -148,4 +155,25 @@ const serializedVaults = (vaults: any[]): EtfTokenVault[] =>
     fundingStartTime: v.account.fundingStartTime,
     fundingUserCount: v.account.fundingUserCount.toNumber(),
     status: v.account.status,
+  }));
+
+export const fetchAllEtfTokenMetadata = async (
+  program: Program<SolfaiManager>,
+) => {
+  const metadataArr = await program.account.etfTokenMetadata.all();
+
+  return deserializeMetadataArr(metadataArr);
+}
+
+interface EtfTokenMetadata {
+  symbol: string;
+  uri: string;
+  mint: string;
+}
+
+const deserializeMetadataArr = (arr: any[]): EtfTokenMetadata[] =>
+  arr.map((item: any) => ({
+    symbol: item.account.symbol,
+    uri: item.account.uri,
+    mint: item.account.mint.toBase58(),
   }));

@@ -1,11 +1,12 @@
 use anchor_lang::prelude::*;
 use anchor_spl::{
-    token::{Mint, Token, TokenAccount},
+    token::{Mint, Token},
 };
 
 use crate::errors::SolfaiManagerError;
 use crate::state::ProgramState;
 use crate::state::EtfTokenVault;
+use crate::state::EtfTokenMetadata;
 use crate::state::ETF_TOKEN_VAULT_STATUS_FUNDING;
 use crate::state::FUNDING_MINIMUM;
 
@@ -41,6 +42,18 @@ pub struct InitializeEtfTokenVault<'info> {
     pub etf_token_mint: Account<'info, Mint>,
 
     #[account(
+        init,
+        payer = creator,
+        space = 8 + EtfTokenMetadata::INIT_SPACE,
+        seeds = [
+            b"etf_token_metadata",
+            etf_token_mint.key().as_ref(),
+        ],
+        bump,
+    )]
+    pub etf_token_metadata: Account<'info, EtfTokenMetadata>,
+
+    #[account(
         mut,
         seeds = [b"program_state".as_ref()],
         bump = program_state.bump,
@@ -55,18 +68,26 @@ impl<'info> InitializeEtfTokenVault<'info> {
     pub fn initialize_etf_token_vault(
         &mut self,
         etf_name: String,
+        etf_token_symbol: String,
+        etf_token_uri: String,
         description: String,
         funding_goal: u64,
         bumps: &InitializeEtfTokenVaultBumps,
     ) -> Result<()> {
-        dbg!("initialize etf token vault");
-
         let funding_start_time = Clock::get()?.unix_timestamp;
 
         if funding_goal < FUNDING_MINIMUM {
             return Err(SolfaiManagerError::InvalidEtfVaultFundingGoal.into());
         };
+
+        msg!("creating metadata accounts");
+        self.etf_token_metadata.set_inner(EtfTokenMetadata {
+            symbol: etf_token_symbol,
+            uri: etf_token_uri,
+            mint: self.etf_token_mint.key(),
+        });
         
+        msg!("initialize etf token vault");
         self.etf_vault.set_inner(EtfTokenVault {
             id: self.program_state.etf_token_count + 1,
             creator: self.creator.key(),

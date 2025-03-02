@@ -21,7 +21,7 @@ pub struct InitializeConfig<'info> {
 
 impl<'info> InitializeConfig<'info> {
     pub fn initialize_config(&mut self, bumps: &InitializeConfigBumps) -> Result<()> {
-        dbg!("initialize config");
+        msg!("initialize config");
 
         self.program_state.set_inner(ProgramState {
             admin: self.admin.key(),
