@@ -4,6 +4,7 @@ declare_id!("5qrApbBfGrQMmeUjwFmj2d728J4htrFtQzBCe5mzUKaD");
 
 mod errors;
 mod instructions;
+mod state;
 
 use instructions::*;
 
@@ -12,7 +13,7 @@ pub mod solfai_manager {
   use super::*;
 
   pub fn initialize_config(ctx: Context<InitializeConfig>) -> Result<()> {
-    ctx.accounts.initialize_config()?;
+    ctx.accounts.initialize_config(&ctx.bumps)?;
     Ok(())
   }
 

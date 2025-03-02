@@ -53,6 +53,25 @@ export type SolfaiManager = {
           "signer": true
         },
         {
+          "name": "programConfig",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
           "name": "systemProgram",
           "address": "11111111111111111111111111111111"
         }
@@ -81,11 +100,48 @@ export type SolfaiManager = {
       "args": []
     }
   ],
+  "accounts": [
+    {
+      "name": "programConfig",
+      "discriminator": [
+        196,
+        210,
+        90,
+        231,
+        144,
+        149,
+        140,
+        63
+      ]
+    }
+  ],
   "errors": [
     {
       "code": 6000,
       "name": "invalidConfigState",
       "msg": "Invalid config state"
+    }
+  ],
+  "types": [
+    {
+      "name": "programConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "admin",
+            "type": "pubkey"
+          },
+          {
+            "name": "etfTokenCount",
+            "type": "u64"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
     }
   ]
 };
