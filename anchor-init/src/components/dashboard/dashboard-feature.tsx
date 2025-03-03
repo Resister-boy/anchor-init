@@ -1,18 +1,24 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function DashboardFeature() {
   const [prompt, setPrompt] = useState("");
   const [isFundraisingModalOpen, setIsFundraisingModalOpen] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!prompt.trim()) return;
 
-    // 여기에 프롬프트 제출 로직 추가 가능
     console.log("프롬프트 제출:", prompt);
     setPrompt("");
+  };
+
+  const handleAddFunds = () => {
+    setIsFundraisingModalOpen(false);
+    router.push("/fundraising");
   };
 
   return (
@@ -54,13 +60,13 @@ export default function DashboardFeature() {
           </div>
         </div>
         <div className="flex ml-8">
-          <button className="bg-black text-white font-bold px-4 py-1 text-sm rounded mr-2">
-            YES
-          </button>
           <button
-            className="border border-black font-bold px-4 py-1 text-sm rounded"
+            className="bg-black text-white font-bold px-4 py-1 text-sm rounded mr-2"
             onClick={() => setIsFundraisingModalOpen(true)}
           >
+            YES
+          </button>
+          <button className="border border-black font-bold px-4 py-1 text-sm rounded">
             START OVER
           </button>
         </div>
@@ -130,10 +136,7 @@ export default function DashboardFeature() {
               <div className="flex justify-center space-x-2">
                 <button
                   className="bg-yellow-400 text-black px-6 py-2 rounded font-bold"
-                  onClick={() => {
-                    // 여기에 ADD FUNDS 로직 추가
-                    setIsFundraisingModalOpen(false);
-                  }}
+                  onClick={handleAddFunds}
                 >
                   ADD FUNDS
                 </button>
