@@ -4,16 +4,74 @@
 
 html,
 body {
-    height: 100%;
+  height: 100%;
 }
 
+/* 지갑 버튼 스타일 */
 .wallet-adapter-button-trigger {
-    background: rgb(100, 26, 230) !important;
-    border-radius: 8px !important;
-    padding-left: 16px !important;
-    padding-right: 16px !important;
+  background: black !important;
+  border-radius: 8px !important;
+  padding-left: 16px !important;
+  padding-right: 16px !important;
+  font-size: 0 !important;
+  height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
+
+.wallet-adapter-button-trigger::after {
+  content: "CONNECT WALLET" !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+}
+
+/* 기존 텍스트 숨기기 */
+.wallet-adapter-button-trigger span {
+  display: none !important;
+}
+
 .wallet-adapter-dropdown-list,
 .wallet-adapter-button {
-    font-family: inherit !important;
+  font-family: inherit !important;
+}
+
+/* 클러스터 선택 버튼 스타일 */
+.cluster-button {
+  background: black !important;
+  color: white !important;
+  border-radius: 8px !important;
+  padding: 0 16px !important;
+  font-weight: 500 !important;
+  text-transform: uppercase !important;
+  height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  font-size: 14px !important;
+}
+
+/* 애니메이션 */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.animation-delay-200 {
+  animation-delay: 0.2s;
+}
+
+.animation-delay-300 {
+  animation-delay: 0.3s;
 }
