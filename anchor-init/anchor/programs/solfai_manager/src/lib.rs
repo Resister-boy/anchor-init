@@ -36,8 +36,8 @@ pub mod solfai_manager {
         Ok(())
     }
 
-    pub fn fund_etf_token(ctx: Context<FundEtfToken>) -> Result<()> {
-        ctx.accounts.fund_etf_token()?;
+    pub fn fund_etf_token(ctx: Context<FundEtfToken>, etf_token_vault_id: u64, fund_amount: u64) -> Result<()> {
+        ctx.accounts.fund_etf_token(etf_token_vault_id, fund_amount)?;
         Ok(())
     }
 }

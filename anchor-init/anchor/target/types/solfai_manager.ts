@@ -25,8 +25,93 @@ export type SolfaiManager = {
         6,
         191
       ],
-      "accounts": [],
-      "args": []
+      "accounts": [
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "etfVault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  116,
+                  102,
+                  95,
+                  116,
+                  111,
+                  107,
+                  101,
+                  110,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "etfTokenVaultId"
+              }
+            ]
+          }
+        },
+        {
+          "name": "userFunding",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  95,
+                  102,
+                  117,
+                  110,
+                  100,
+                  100,
+                  105,
+                  110,
+                  103
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "etfTokenVaultId"
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "etfTokenVaultId",
+          "type": "u64"
+        },
+        {
+          "name": "fundAmount",
+          "type": "u64"
+        }
+      ]
     },
     {
       "name": "initializeConfig",
@@ -238,6 +323,19 @@ export type SolfaiManager = {
         167,
         230
       ]
+    },
+    {
+      "name": "userFunding",
+      "discriminator": [
+        192,
+        113,
+        62,
+        236,
+        115,
+        31,
+        75,
+        40
+      ]
     }
   ],
   "errors": [
@@ -245,6 +343,11 @@ export type SolfaiManager = {
       "code": 6000,
       "name": "invalidEtfVaultFundingGoal",
       "msg": "Invalid etf vault funding goal"
+    },
+    {
+      "code": 6001,
+      "name": "exceedEtfVaultFundingGoal",
+      "msg": "Exceed etf vault funding goal"
     }
   ],
   "types": [
@@ -336,6 +439,30 @@ export type SolfaiManager = {
           {
             "name": "bump",
             "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "userFunding",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "etfTokenVaultId",
+            "type": "u64"
+          },
+          {
+            "name": "user",
+            "type": "pubkey"
+          },
+          {
+            "name": "totalAmount",
+            "type": "u64"
+          },
+          {
+            "name": "lastUpdated",
+            "type": "u64"
           }
         ]
       }
