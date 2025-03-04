@@ -1,5 +1,4 @@
 use anchor_lang::prelude::*;
-use anchor_spl::token::Mint;
 use anchor_spl::token::Token;
 use anchor_spl::token::SetAuthority;
 use anchor_spl::token;
@@ -84,7 +83,6 @@ impl<'info> InitializeEtfTokenVault<'info> {
             token::spl_token::instruction::AuthorityType::MintTokens,
             Some(self.etf_vault.key()), // Set to new authority
         )?;
-
         
         Ok(())
     }

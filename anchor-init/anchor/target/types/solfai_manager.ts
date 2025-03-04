@@ -14,6 +14,203 @@ export type SolfaiManager = {
   },
   "instructions": [
     {
+      "name": "claimEtfToken",
+      "discriminator": [
+        199,
+        177,
+        89,
+        147,
+        82,
+        51,
+        17,
+        110
+      ],
+      "accounts": [
+        {
+          "name": "user",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "etfVault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  101,
+                  116,
+                  102,
+                  95,
+                  116,
+                  111,
+                  107,
+                  101,
+                  110,
+                  95,
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "etfTokenVaultId"
+              }
+            ]
+          }
+        },
+        {
+          "name": "userFunding",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114,
+                  95,
+                  102,
+                  117,
+                  110,
+                  100,
+                  105,
+                  110,
+                  103
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "etfTokenVaultId"
+              },
+              {
+                "kind": "account",
+                "path": "user"
+              }
+            ]
+          }
+        },
+        {
+          "name": "mint",
+          "writable": true
+        },
+        {
+          "name": "userAta",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "etfVault"
+              },
+              {
+                "kind": "const",
+                "value": [
+                  6,
+                  221,
+                  246,
+                  225,
+                  215,
+                  101,
+                  161,
+                  147,
+                  217,
+                  203,
+                  225,
+                  70,
+                  206,
+                  235,
+                  121,
+                  172,
+                  28,
+                  180,
+                  133,
+                  237,
+                  95,
+                  91,
+                  55,
+                  145,
+                  58,
+                  140,
+                  245,
+                  133,
+                  126,
+                  255,
+                  0,
+                  169
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "associatedTokenProgram",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "tokenProgram",
+          "address": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA"
+        },
+        {
+          "name": "systemProgram",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "etfTokenVaultId",
+          "type": "u64"
+        }
+      ]
+    },
+    {
       "name": "fundEtfToken",
       "discriminator": [
         111,
@@ -79,7 +276,6 @@ export type SolfaiManager = {
                   102,
                   117,
                   110,
-                  100,
                   100,
                   105,
                   110,
@@ -295,6 +491,36 @@ export type SolfaiManager = {
     },
     {
       "code": 6002,
+      "name": "invalidMintAccount",
+      "msg": "Invalid mint account"
+    },
+    {
+      "code": 6003,
+      "name": "uninitializedMintAccount",
+      "msg": "Uninitialized mint account"
+    },
+    {
+      "code": 6004,
+      "name": "sufficientFundedAmount",
+      "msg": "sufficient funded amount"
+    },
+    {
+      "code": 6005,
+      "name": "fundingStageEnded",
+      "msg": "Funding stage ended"
+    },
+    {
+      "code": 6006,
+      "name": "claimStageEnded",
+      "msg": "Claim stage ended"
+    },
+    {
+      "code": 6007,
+      "name": "alreadyClaimed",
+      "msg": "Already claimed"
+    },
+    {
+      "code": 6008,
       "name": "invalidTokenMintAuthority",
       "msg": "Invalid token mint authority"
     }
@@ -392,6 +618,14 @@ export type SolfaiManager = {
           {
             "name": "lastUpdated",
             "type": "u64"
+          },
+          {
+            "name": "claimed",
+            "type": "bool"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
           }
         ]
       }

@@ -1,12 +1,14 @@
 import * as anchor from '@coral-xyz/anchor'
 import { Program } from '@coral-xyz/anchor'
-import { Account, Keypair, SystemProgram, Connection } from '@solana/web3.js'
+import { Account, Keypair, SystemProgram, Connection, PublicKey } from '@solana/web3.js'
 import { SolfaiManager } from '../target/types/solfai_manager'
 import {
-  createMint,
   getOrCreateAssociatedTokenAccount,
-  mintTo,
-  TOKEN_PROGRAM_ID
+  createMint,
+  TOKEN_PROGRAM_ID,
+  getAssociatedTokenAddress,
+  MintLayout,
+  createAssociatedTokenAccountInstruction
 } from "@solana/spl-token";
 
 describe('solfai_manager', () => {
@@ -141,15 +143,52 @@ describe('solfai_manager', () => {
     console.log('funding user 2 tx: ', tx)
   })
 
-  it('As a user, I can get all etf token vaults', async () => {
-    const allVaults = await fetchAllEtfTokenVaults(program);
-    console.log('ALL ETF VAULTS: ', allVaults)
+  it('Claim', async () => {
+
+    let ETF_VAULT_ID = new anchor.BN(1)
+    let [etfVaultPda, etfVaultBump] = anchor.web3.PublicKey.findProgramAddressSync(
+      [Buffer.from("etf_token_vault"), new anchor.BN(ETF_VAULT_ID).toArrayLike(Buffer, "le", 8)],
+      program.programId
+    );
+    const user1Ata = await getAssociatedTokenAddress(mint1ByCreator1.publicKey, fundingUser1Keypair.publicKey);
+    
+    let tx = await program.methods.claimEtfToken(
+      ETF_VAULT_ID,
+    )
+      .accounts({
+        user: fundingUser1Keypair.publicKey,
+        mint: mint1ByCreator1.publicKey,
+      })
+      .signers([fundingUser1Keypair])
+      .rpc({
+        skipPreflight: false
+      })
+    console.log('claim user 1 tx: ', tx)
+
+    // tx = await program.methods
+    //   .fundEtfToken(
+    //     ETF_VAULT_ID,
+    //     new anchor.BN(19_000_000_000), // 19 SOL
+    //   )
+    //   .accounts({
+    //     user: fundingUser2Keypair.publicKey,
+    //   })
+    //   .signers([fundingUser2Keypair])
+    //   .rpc({
+    //     skipPreflight: true
+    //   })
+    // console.log('funding user 2 tx: ', tx)
   })
 
-  it('As a user, I can get all user fundings', async () => {
-    const metadata = await fetchAllUserFunding(program, 1);
-    console.log('ALL ETF User Fundings: ', metadata)
-  })
+  // it('As a user, I can get all etf token vaults', async () => {
+  //   const allVaults = await fetchAllEtfTokenVaults(program);
+  //   console.log('ALL ETF VAULTS: ', allVaults)
+  // })
+
+  // it('As a user, I can get all user fundings', async () => {
+  //   const metadata = await fetchAllUserFunding(program, 1);
+  //   console.log('ALL ETF User Fundings: ', metadata)
+  // })
 })
 
 export async function airdrop(

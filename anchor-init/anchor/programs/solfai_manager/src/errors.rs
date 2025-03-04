@@ -8,6 +8,24 @@ pub enum SolfaiManagerError {
     #[msg("Exceed etf vault funding goal")]
     ExceedEtfVaultFundingGoal,
 
+    #[msg("Invalid mint account")]
+    InvalidMintAccount,
+    
+    #[msg("Uninitialized mint account")]
+    UninitializedMintAccount,
+
+    #[msg("sufficient funded amount")]
+    SufficientFundedAmount,
+
+    #[msg("Funding stage ended")]
+    FundingStageEnded,
+    
+    #[msg("Claim stage ended")]
+    ClaimStageEnded,
+
+    #[msg("Already claimed")]
+    AlreadyClaimed,
+
     #[msg("Invalid token mint authority")]
     InvalidTokenMintAuthority, // TODO: checking authority
 }
