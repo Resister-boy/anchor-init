@@ -20,15 +20,11 @@ pub mod solfai_manager {
     pub fn initialize_etf_token_vault(
         ctx: Context<InitializeEtfTokenVault>,
         etf_name: String,
-        etf_token_symbol: String,
-        etf_token_uri: String,
         description: String,
         funding_goal: u64,
     ) -> Result<()> {
         ctx.accounts.initialize_etf_token_vault(
           etf_name,
-          etf_token_symbol,
-          etf_token_uri,
           description,
           funding_goal,
           &ctx.bumps,

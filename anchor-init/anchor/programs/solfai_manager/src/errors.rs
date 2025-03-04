@@ -7,4 +7,7 @@ pub enum SolfaiManagerError {
 
     #[msg("Exceed etf vault funding goal")]
     ExceedEtfVaultFundingGoal,
+
+    #[msg("Invalid token mint authority")]
+    InvalidTokenMintAuthority, // TODO: checking authority
 }
