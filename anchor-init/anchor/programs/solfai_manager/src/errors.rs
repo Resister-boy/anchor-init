@@ -14,8 +14,8 @@ pub enum SolfaiManagerError {
     #[msg("Uninitialized mint account")]
     UninitializedMintAccount,
 
-    #[msg("sufficient funded amount")]
-    SufficientFundedAmount,
+    #[msg("Insufficient funded amount")]
+    InsufficientFundedAmount,
 
     #[msg("Funding stage ended")]
     FundingStageEnded,
