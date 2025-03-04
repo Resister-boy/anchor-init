@@ -501,8 +501,8 @@ export type SolfaiManager = {
     },
     {
       "code": 6004,
-      "name": "sufficientFundedAmount",
-      "msg": "sufficient funded amount"
+      "name": "insufficientFundedAmount",
+      "msg": "Insufficient funded amount"
     },
     {
       "code": 6005,

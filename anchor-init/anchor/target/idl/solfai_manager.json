@@ -495,8 +495,8 @@
     },
     {
       "code": 6004,
-      "name": "SufficientFundedAmount",
-      "msg": "sufficient funded amount"
+      "name": "InsufficientFundedAmount",
+      "msg": "Insufficient funded amount"
     },
     {
       "code": 6005,

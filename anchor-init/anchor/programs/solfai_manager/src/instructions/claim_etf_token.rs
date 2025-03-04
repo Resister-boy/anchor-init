@@ -65,7 +65,7 @@ impl<'info> ClaimEtfToken<'info> {
         );
         require!(
             self.etf_vault.funded_amount >= self.user_funding.total_amount,
-            SolfaiManagerError::SufficientFundedAmount,
+            SolfaiManagerError::InsufficientFundedAmount,
         );
         require!(
             self.mint.key() == self.etf_vault.etf_token_mint,
