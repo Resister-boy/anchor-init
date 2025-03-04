@@ -83,7 +83,9 @@ impl<'info> InitializeEtfTokenVault<'info> {
             token::spl_token::instruction::AuthorityType::MintTokens,
             Some(self.etf_vault.key()), // Set to new authority
         )?;
-        
+        // TODO: set update authority
+
+        self.program_state.etf_token_count += 1;
         Ok(())
     }
 }

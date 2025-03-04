@@ -31,6 +31,7 @@ describe('solfai_manager', () => {
 
   // Generate a new keypair for the mint (This is the mint account)
   const mint1ByCreator1 = Keypair.generate()
+  const mint2ByCreator1 = Keypair.generate()
 
 
   it('As an Admin, I can initialize Program Config', async () => {
@@ -100,6 +101,44 @@ describe('solfai_manager', () => {
     console.log('ETF TOKEN VAULT: ', etfVault)
 
     console.log('ETF MINT: ', mintAddress.toString())
+
+    console.log('=======================================================',)
+    // create mint account 
+    const mint2Address = await createMint(
+      connection,         // Solana Connection
+      etfCreator1Keypair,      // Payer (pays the transaction fees)
+      etfCreator1Keypair.publicKey, // Mint authority (who can mint tokens)
+      null,
+      6, // Decimals (e.g., 6 = 1,000,000 units per token)
+      mint2ByCreator1,                // Keypair for the mint account
+    );
+
+    ETF_VAULT_ID = programState.etfTokenCount.add(new anchor.BN(2))
+
+    let [etfVault2Pda, etfVault2Bump] = anchor.web3.PublicKey.findProgramAddressSync(
+      [Buffer.from("etf_token_vault"), new anchor.BN(ETF_VAULT_ID).toArrayLike(Buffer, "le", 8)],
+      program.programId
+    );
+    const tx2 = await program.methods
+      .initializeEtfTokenVault(
+        "COOCIE ETF 2",
+        "COOCIE is a new ETF token on Solana 2",
+        new anchor.BN(10_000_000_000), // funding goal: 10 SOL
+      )
+      .accounts({
+        creator: etfCreator1Keypair.publicKey,
+        etfVault: etfVault2Pda,
+        etfTokenMint: mint2Address,
+      })
+      .signers([etfCreator1Keypair])
+      .rpc()
+
+    console.log('tx 2: ', tx2)
+
+    const etfVault2 = await program.account.etfTokenVault.fetch(etfVault2Pda);
+    console.log('ETF TOKEN VAULT 2: ', etfVault2)
+
+    console.log('ETF MINT 2: ', mint2Address.toString())
   })
 
   it('Funding', async () => {
@@ -144,13 +183,11 @@ describe('solfai_manager', () => {
   })
 
   it('Claim', async () => {
-
     let ETF_VAULT_ID = new anchor.BN(1)
     let [etfVaultPda, etfVaultBump] = anchor.web3.PublicKey.findProgramAddressSync(
       [Buffer.from("etf_token_vault"), new anchor.BN(ETF_VAULT_ID).toArrayLike(Buffer, "le", 8)],
       program.programId
     );
-    const user1Ata = await getAssociatedTokenAddress(mint1ByCreator1.publicKey, fundingUser1Keypair.publicKey);
     
     let tx = await program.methods.claimEtfToken(
       ETF_VAULT_ID,
@@ -164,31 +201,17 @@ describe('solfai_manager', () => {
         skipPreflight: false
       })
     console.log('claim user 1 tx: ', tx)
-
-    // tx = await program.methods
-    //   .fundEtfToken(
-    //     ETF_VAULT_ID,
-    //     new anchor.BN(19_000_000_000), // 19 SOL
-    //   )
-    //   .accounts({
-    //     user: fundingUser2Keypair.publicKey,
-    //   })
-    //   .signers([fundingUser2Keypair])
-    //   .rpc({
-    //     skipPreflight: true
-    //   })
-    // console.log('funding user 2 tx: ', tx)
   })
 
-  // it('As a user, I can get all etf token vaults', async () => {
-  //   const allVaults = await fetchAllEtfTokenVaults(program);
-  //   console.log('ALL ETF VAULTS: ', allVaults)
-  // })
+  it('As a user, I can get all etf token vaults', async () => {
+    const allVaults = await fetchAllEtfTokenVaults(program);
+    console.log('ALL ETF VAULTS: ', allVaults)
+  })
 
-  // it('As a user, I can get all user fundings', async () => {
-  //   const metadata = await fetchAllUserFunding(program, 1);
-  //   console.log('ALL ETF User Fundings: ', metadata)
-  // })
+  it('As a user, I can get all user fundings', async () => {
+    const metadata = await fetchAllUserFunding(program, 1);
+    console.log('ALL ETF User Fundings: ', metadata)
+  })
 })
 
 export async function airdrop(
