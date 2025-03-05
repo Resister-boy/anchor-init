@@ -44,7 +44,7 @@ pub struct ClaimEtfToken<'info> {
         init_if_needed,
         payer = user,
         associated_token::mint = mint,
-        associated_token::authority = etf_vault, // PDA owns the ATA
+        associated_token::authority = user,
     )]
     pub user_ata: Account<'info, TokenAccount>,
 
