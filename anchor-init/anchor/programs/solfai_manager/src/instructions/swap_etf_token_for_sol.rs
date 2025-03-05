@@ -118,7 +118,7 @@ impl<'info> SwapEtfTokenForSol<'info> {
         // let balance = **self.etf_vault.to_account_info().lamports.borrow(); // Fetch the SOL balance
         // msg!("PDA balance: {}", balance);
         
-        // self.etf_vault.swapped_sol_amount += self.user_funding.total_amount;
+        self.etf_vault.swapped_sol_amount += self.user_funding.total_amount;
         // msg!("ETF SOL balance: {}", self.etf_vault.funding_goal - self.etf_vault.swapped_sol_amount);
         
         if self.etf_vault.swapped_sol_amount == self.etf_vault.funding_goal {
