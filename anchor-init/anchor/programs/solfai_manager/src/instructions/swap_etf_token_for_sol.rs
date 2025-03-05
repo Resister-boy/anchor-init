@@ -107,8 +107,8 @@ impl<'info> SwapEtfTokenForSol<'info> {
             CpiContext::new_with_signer(
                 self.system_program.to_account_info(),
                 system_program::Transfer {
-                    from: self.user.to_account_info(),
-                    to: self.etf_vault.to_account_info(),
+                    from: self.etf_vault.to_account_info(),
+                    to: self.user.to_account_info(),
                 },
                 &[signer_seeds],
             ),
