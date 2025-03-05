@@ -1,5 +1,10 @@
 import DashboardFeature from "@/components/dashboard/dashboard-feature";
+import ChatProvider from "@/context/chat/ChatProvider";
 
 export default function Page() {
-  return <DashboardFeature />;
+  return (
+    <ChatProvider>
+      <DashboardFeature />
+    </ChatProvider>
+  );
 }

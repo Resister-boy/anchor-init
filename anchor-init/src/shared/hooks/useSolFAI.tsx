@@ -229,6 +229,37 @@ export const useSolFAI = () => {
     }
   }, [program, provider]);
 
+  const swapToken = useCallback(
+    async ({
+      vaultId,
+      user,
+      mint,
+    }: {
+      vaultId: BN;
+      user: string;
+      mint: string;
+    }) => {
+      try {
+        if (provider && program) {
+          const tx = await program.methods
+            .swapEtfTokenForSol(vaultId)
+            .accounts({
+              user: new PublicKey(user),
+              mint: new PublicKey(mint),
+            })
+            .rpc({ skipPreflight: true });
+
+          return tx;
+        }
+        return null;
+      } catch (error) {
+        console.error(error);
+        return null;
+      }
+    },
+    [program, provider]
+  );
+
   const claimToken = useCallback(
     async ({ vaultId, mint }: { vaultId: BN; mint: string }) => {
       try {
@@ -289,6 +320,7 @@ export const useSolFAI = () => {
     mintToken,
     claimToken,
     createToken,
+    swapToken,
     getATA,
   };
 };

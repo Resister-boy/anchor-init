@@ -29,6 +29,7 @@ const TestClient = () => {
     createToken,
     claimToken,
     getATA,
+    swapToken,
   } = useSolFAI();
 
   console.log(state);
@@ -106,6 +107,14 @@ const TestClient = () => {
     mutationFn: fetchFund,
     onSuccess: (data) => {
       setUserList(data);
+      console.log(data);
+    },
+  });
+
+  const swapTokenMutation = useMutation({
+    mutationKey: ["swapToken", current],
+    mutationFn: swapToken,
+    onSuccess: (data) => {
       console.log(data);
     },
   });
@@ -204,10 +213,10 @@ const TestClient = () => {
           <button
             className="w-44 py-2 rounded-md bg-blue-500 text-sm"
             onClick={() => {
-              if (current && ata) {
+              if (current && currentMint) {
                 claimTokenMutation.mutate({
                   vaultId: new anchor.BN(current),
-                  mint: ata,
+                  mint: currentMint,
                 });
               }
             }}
@@ -216,7 +225,29 @@ const TestClient = () => {
           </button>
           {current && (
             <p>
-              id: {current}, pda: {currentVaultPda}, ata: {ata}
+              id: {current}, pda: {currentVaultPda}, mint: {currentMint}
+            </p>
+          )}
+        </div>
+        <div className="p-4 w-screen flex flex-col space-y-2 items-start justify-start">
+          <h3 className="font-semibold">Swap Token</h3>
+          <button
+            className="w-44 py-2 rounded-md bg-blue-500 text-sm"
+            onClick={() => {
+              if (current && provider && currentMint) {
+                swapTokenMutation.mutate({
+                  vaultId: new anchor.BN(current),
+                  user: provider?.publicKey.toBase58(),
+                  mint: currentMint,
+                });
+              }
+            }}
+          >
+            Swap Token
+          </button>
+          {current && (
+            <p>
+              id: {current}, pda: {currentVaultPda}, mint: {currentMint}
             </p>
           )}
         </div>
@@ -235,6 +266,7 @@ const TestClient = () => {
           >
             Fetch ATA
           </button>
+          {ata && <p>{ata}</p>}
         </div>
         <div className="p-4 w-screen flex flex-col space-y-2 items-start justify-start">
           <h3 className="font-semibold">Fetch All Vaults</h3>
