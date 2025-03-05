@@ -1,8 +1,10 @@
 use anchor_lang::prelude::*;
-use anchor_spl::token::{self, Mint, Token, TokenAccount};
-use anchor_spl::associated_token::{self, Create};
 use anchor_spl::associated_token::AssociatedToken;
-
+use anchor_spl::associated_token::{self, Create};
+use anchor_spl::token::{self, Mint, Token, TokenAccount};
+use num_bigint::BigUint;
+use num_traits::One;
+use num_traits::ToPrimitive;
 use crate::errors::*;
 use crate::state::EtfTokenVault;
 use crate::state::UserFunding;
@@ -80,7 +82,7 @@ impl<'info> ClaimEtfToken<'info> {
         Ok(())
     }
 
-    pub fn mint_etf_tokens(&self, etf_token_vault_id: u64) -> Result<()> {
+    pub fn mint_etf_tokens(&mut self, etf_token_vault_id: u64) -> Result<()> {
         if self.mint.to_account_info().data_is_empty() {
             return Err(SolfaiManagerError::UninitializedMintAccount.into());
         }
@@ -92,6 +94,12 @@ impl<'info> ClaimEtfToken<'info> {
             &[self.etf_vault.bump],
         ];
 
+        let total_amount = BigUint::from(self.user_funding.total_amount);
+        let funding_goal = BigUint::from(self.etf_vault.funding_goal);
+        let total_mint_count = BigUint::from(1_000_000_000u64);
+        let total_amount = total_amount * total_mint_count;
+        let total_amount = (total_amount / funding_goal).to_u64().expect("failed to calculate mint amount");
+
         token::mint_to(
             CpiContext::new_with_signer(
                 self.token_program.to_account_info(),
@@ -102,8 +110,11 @@ impl<'info> ClaimEtfToken<'info> {
                 },
                 &[signer_seeds],
             ),
-            self.user_funding.total_amount / 1000 * 2, // TODO: change amount of tokens to mint
+            total_amount, // TODO: change amount of tokens to mint
         )?;
+
+        self.user_funding.minted_amount = total_amount;
+        msg!("minted {}", self.user_funding.minted_amount);
 
         Ok(())
     }

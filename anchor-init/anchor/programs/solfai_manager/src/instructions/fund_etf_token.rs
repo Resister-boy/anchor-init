@@ -65,6 +65,7 @@ impl<'info> FundEtfToken<'info> {
             total_amount: fund_amount,
             last_updated: Clock::get()?.unix_timestamp as u64,
             claimed: false,
+            minted_amount: 0,
             bump: bumps.user_funding,
         });
 

@@ -1,6 +1,6 @@
 import * as anchor from '@coral-xyz/anchor'
 import { Program } from '@coral-xyz/anchor'
-import { Account, Keypair, SystemProgram, Connection, PublicKey } from '@solana/web3.js'
+import { Keypair, SystemProgram, Connection, PublicKey } from '@solana/web3.js'
 import { SolfaiManager } from '../target/types/solfai_manager'
 import {
   getOrCreateAssociatedTokenAccount,
@@ -184,23 +184,56 @@ describe('solfai_manager', () => {
 
   it('Claim', async () => {
     let ETF_VAULT_ID = new anchor.BN(1)
-    let [etfVaultPda, etfVaultBump] = anchor.web3.PublicKey.findProgramAddressSync(
-      [Buffer.from("etf_token_vault"), new anchor.BN(ETF_VAULT_ID).toArrayLike(Buffer, "le", 8)],
-      program.programId
-    );
-    
+
     let tx = await program.methods.claimEtfToken(
       ETF_VAULT_ID,
-    )
-      .accounts({
-        user: fundingUser1Keypair.publicKey,
-        mint: mint1ByCreator1.publicKey,
-      })
+    ).accounts({
+      user: fundingUser1Keypair.publicKey,
+      mint: mint1ByCreator1.publicKey,
+    })
       .signers([fundingUser1Keypair])
-      .rpc({
-        skipPreflight: false
-      })
+      .rpc()
     console.log('claim user 1 tx: ', tx)
+
+    let tx2 = await program.methods.claimEtfToken(
+      ETF_VAULT_ID,
+    ).accounts({
+      user: fundingUser2Keypair.publicKey,
+      mint: mint1ByCreator1.publicKey,
+    })
+      .signers([fundingUser2Keypair])
+      .rpc()
+    console.log('claim user 2 tx: ', tx2)
+  })
+
+  it('Swap the token for sol', async () => {
+    const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+    await sleep(2000);
+
+    let ETF_VAULT_ID = new anchor.BN(1)
+
+    // swap etf token for sol
+    let tx = await program.methods.swapEtfTokenForSol(
+      ETF_VAULT_ID,
+    ).accounts({
+      user: fundingUser1Keypair.publicKey,
+      mint: mint1ByCreator1.publicKey,
+    }).signers([fundingUser1Keypair])
+      .rpc()
+    console.log('user 1 tx: swap token for sol: ', tx)
+
+    // swap etf token for sol
+    let tx2 = await program.methods.swapEtfTokenForSol(
+      ETF_VAULT_ID,
+    ).accounts({
+      user: fundingUser2Keypair.publicKey,
+      mint: mint1ByCreator1.publicKey,
+    }).signers([fundingUser2Keypair])
+      .rpc()
+    console.log('user 2 tx 2: swap token for sol: ', tx2)
+
+    const vault = await fetchEtfTokenVault(program, 1)
+    console.log('ETF vault: ', vault)
   })
 
   it('As a user, I can get all etf token vaults', async () => {
@@ -287,3 +320,16 @@ const deserializeUserFundings = (arr: any[]): UserFunding[] =>
     totalAmount: item.account.totalAmount.toNumber(),
     lastUpdated: item.account.lastUpdated.toNumber() * 1000,
   }));
+
+
+export const fetchEtfTokenVault = async (
+  program: Program<SolfaiManager>,
+  etfTokenVauldId: number,
+) => {
+  const allVaultAccounts = await program.account.etfTokenVault.all();
+
+  const result = allVaultAccounts.filter((vaultAccount) => {
+    return vaultAccount.account.id.eq(new anchor.BN(etfTokenVauldId))
+  })
+  return deserializeVaults(allVaultAccounts)[0];
+}

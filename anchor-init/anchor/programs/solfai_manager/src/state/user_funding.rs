@@ -8,5 +8,6 @@ pub struct UserFunding {
     pub total_amount: u64,
     pub last_updated: u64,
     pub claimed: bool,
+    pub minted_amount: u64,
     pub bump: u8,
 }

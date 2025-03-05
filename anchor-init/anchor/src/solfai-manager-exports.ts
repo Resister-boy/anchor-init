@@ -21,7 +21,7 @@ export function getSolfaiManagerProgramId(cluster: Cluster) {
     case 'devnet':
     case 'testnet':
       // This is the program ID for the SolfaiManager program on devnet and testnet.
-      return new PublicKey('5qrApbBfGrQMmeUjwFmj2d728J4htrFtQzBCe5mzUKaD')
+      return new PublicKey('BhJaivSr483tJ2PqodLwZvE85hyRaUUWssqZyYhbqfFX')
     case 'mainnet-beta':
     default:
       return SOLFAIMANAGER_PROGRAM_ID_PROGRAM_ID

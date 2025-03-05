@@ -23,8 +23,14 @@ pub enum SolfaiManagerError {
     #[msg("Claim stage ended")]
     ClaimStageEnded,
 
+    #[msg("ETF terminated")]
+    EtfTerminated,
+
     #[msg("Already claimed")]
     AlreadyClaimed,
+
+    #[msg("Invalid user funding claim status")]
+    InvalidUserFundingClaimStatus,
 
     #[msg("Invalid token mint authority")]
     InvalidTokenMintAuthority, // TODO: checking authority

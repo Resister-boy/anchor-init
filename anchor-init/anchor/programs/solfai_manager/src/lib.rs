@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-declare_id!("5qrApbBfGrQMmeUjwFmj2d728J4htrFtQzBCe5mzUKaD");
+declare_id!("BhJaivSr483tJ2PqodLwZvE85hyRaUUWssqZyYhbqfFX");
 
 mod errors;
 mod instructions;
@@ -40,6 +40,11 @@ pub mod solfai_manager {
 
     pub fn claim_etf_token(ctx: Context<ClaimEtfToken>, etf_token_vault_id: u64) -> Result<()> {
         ctx.accounts.claim_etf_token(etf_token_vault_id)?;
+        Ok(())
+    }
+
+    pub fn swap_etf_token_for_sol(ctx: Context<SwapEtfTokenForSol>, etf_token_vault_id: u64) -> Result<()> {
+        ctx.accounts.swap_etf_token_for_sol(etf_token_vault_id)?;
         Ok(())
     }
 }

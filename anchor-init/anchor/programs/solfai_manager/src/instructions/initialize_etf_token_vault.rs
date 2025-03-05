@@ -63,6 +63,7 @@ impl<'info> InitializeEtfTokenVault<'info> {
             etf_name,
             etf_token_mint: self.etf_token_mint.key(),
             description,
+            swapped_sol_amount: 0,
             funded_amount: 0,
             funding_goal,
             funding_start_time: funding_start_time as u64,

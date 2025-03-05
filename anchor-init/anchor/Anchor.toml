@@ -6,7 +6,7 @@ resolution = true
 skip-lint = false
 
 [programs.localnet]
-solfai_manager = "5qrApbBfGrQMmeUjwFmj2d728J4htrFtQzBCe5mzUKaD"
+solfai_manager = "BhJaivSr483tJ2PqodLwZvE85hyRaUUWssqZyYhbqfFX"
 
 [registry]
 url = "https://api.apr.dev"
