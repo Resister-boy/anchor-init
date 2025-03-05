@@ -5,6 +5,7 @@ use anchor_spl::associated_token;
 use anchor_spl::associated_token::AssociatedToken;
 use anchor_spl::token::{self, Burn, Mint, Token, TokenAccount};
 use solana_program::{pubkey::Pubkey, system_instruction};
+use crate::swap_etf_token_for_sol::solana_program::program::invoke_signed;
 
 use crate::errors::*;
 use crate::state::EtfTokenVault;
@@ -26,7 +27,17 @@ pub struct SwapEtfTokenForSol<'info> {
         ],
         bump = etf_vault.bump,
     )]
-    pub etf_vault: Account<'info, EtfTokenVault>, // PDA as mint authority and sol treasury
+    pub etf_vault: Account<'info, EtfTokenVault>, // PDA as mint authority
+    
+    #[account(
+        mut,
+        seeds = [
+            b"vault".as_ref(),
+            etf_token_vault_id.to_le_bytes().as_ref(),
+         ],
+        bump,
+    )]
+    pub vault: SystemAccount<'info>, // sol vault
 
     #[account(
         mut,
@@ -46,7 +57,7 @@ pub struct SwapEtfTokenForSol<'info> {
         init_if_needed,
         payer = user,
         associated_token::mint = mint,
-        associated_token::authority = etf_vault,
+        associated_token::authority = user,
     )]
     pub user_ata: Account<'info, TokenAccount>,
 
@@ -56,7 +67,7 @@ pub struct SwapEtfTokenForSol<'info> {
 }
 
 impl<'info> SwapEtfTokenForSol<'info> {
-    pub fn swap_etf_token_for_sol(&mut self, etf_token_vault_id: u64) -> Result<()> {
+    pub fn swap_etf_token_for_sol(&mut self, etf_token_vault_id: u64, bumps: &SwapEtfTokenForSolBumps,) -> Result<()> {
         msg!("swap_etf_token_for_sol");
 
         require!(
@@ -78,20 +89,14 @@ impl<'info> SwapEtfTokenForSol<'info> {
         
         // burn the etf tokens
         let etf_token_vault_id_bytes = etf_token_vault_id.to_le_bytes();
-        let signer_seeds: &[&[u8]] = &[
-            b"etf_token_vault",
-            etf_token_vault_id_bytes.as_ref(),
-            &[self.etf_vault.bump],
-        ];
         token::burn(
-            CpiContext::new_with_signer(
+            CpiContext::new(
                 self.token_program.to_account_info(),
                 Burn {
                     mint: self.mint.to_account_info(),
                     from: self.user_ata.to_account_info(),
-                    authority: self.etf_vault.to_account_info(),
+                    authority: self.user.to_account_info(),
                 },
-                &[signer_seeds],
             ),
             self.user_funding.minted_amount,
         )?;
@@ -99,15 +104,15 @@ impl<'info> SwapEtfTokenForSol<'info> {
         
         // transfer sol from etf vault to user
         let signer_seeds: &[&[u8]] = &[
-            b"etf_token_vault",
+            b"vault",
             etf_token_vault_id_bytes.as_ref(),
-            &[self.etf_vault.bump],
+            &[bumps.vault],
         ];
         system_program::transfer(
             CpiContext::new_with_signer(
                 self.system_program.to_account_info(),
                 system_program::Transfer {
-                    from: self.etf_vault.to_account_info(),
+                    from: self.vault.to_account_info(),
                     to: self.user.to_account_info(),
                 },
                 &[signer_seeds],

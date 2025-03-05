@@ -27,6 +27,15 @@ pub struct InitializeEtfTokenVault<'info> {
     )]
     pub etf_vault: Account<'info, EtfTokenVault>,
 
+    #[account(
+        seeds = [
+            b"vault".as_ref(),
+            (program_state.etf_token_count + 1).to_le_bytes().as_ref(),
+         ],
+        bump,
+    )]
+    pub vault: SystemAccount<'info>,
+
     #[account(mut)]
     /// CHECK: this is created by frontend
     pub etf_token_mint: UncheckedAccount<'info>,
@@ -63,6 +72,7 @@ impl<'info> InitializeEtfTokenVault<'info> {
             etf_name,
             etf_token_mint: self.etf_token_mint.key(),
             description,
+            minted_amount: 0,
             swapped_sol_amount: 0,
             funded_amount: 0,
             funding_goal,

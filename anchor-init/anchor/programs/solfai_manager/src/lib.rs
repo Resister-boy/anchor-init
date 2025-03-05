@@ -44,7 +44,7 @@ pub mod solfai_manager {
     }
 
     pub fn swap_etf_token_for_sol(ctx: Context<SwapEtfTokenForSol>, etf_token_vault_id: u64) -> Result<()> {
-        ctx.accounts.swap_etf_token_for_sol(etf_token_vault_id)?;
+        ctx.accounts.swap_etf_token_for_sol(etf_token_vault_id, &ctx.bumps)?;
         Ok(())
     }
 }

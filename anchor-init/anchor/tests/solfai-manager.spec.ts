@@ -81,6 +81,11 @@ describe('solfai_manager', () => {
       program.programId
     );
 
+    let [vaultPda, vaultPdaBump] = anchor.web3.PublicKey.findProgramAddressSync(
+      [Buffer.from("vault"), new anchor.BN(ETF_VAULT_ID).toArrayLike(Buffer, "le", 8)],
+      program.programId
+    );
+
     const tx = await program.methods
       .initializeEtfTokenVault(
         "COOCIE ETF",
@@ -91,6 +96,7 @@ describe('solfai_manager', () => {
         creator: etfCreator1Keypair.publicKey,
         etfVault: etfVaultPda,
         etfTokenMint: mintAddress,
+        vault: vaultPda,
       })
       .signers([etfCreator1Keypair])
       .rpc()
@@ -119,6 +125,11 @@ describe('solfai_manager', () => {
       [Buffer.from("etf_token_vault"), new anchor.BN(ETF_VAULT_ID).toArrayLike(Buffer, "le", 8)],
       program.programId
     );
+    let [vault2Pda, vaultPda2Bump] = anchor.web3.PublicKey.findProgramAddressSync(
+      [Buffer.from("vault"), new anchor.BN(ETF_VAULT_ID).toArrayLike(Buffer, "le", 8)],
+      program.programId
+    );
+
     const tx2 = await program.methods
       .initializeEtfTokenVault(
         "COOCIE ETF 2",
@@ -129,6 +140,7 @@ describe('solfai_manager', () => {
         creator: etfCreator1Keypair.publicKey,
         etfVault: etfVault2Pda,
         etfTokenMint: mint2Address,
+        vault: vault2Pda,
       })
       .signers([etfCreator1Keypair])
       .rpc()

@@ -107,7 +107,7 @@ export type SolfaiManager = {
             "seeds": [
               {
                 "kind": "account",
-                "path": "etfVault"
+                "path": "user"
               },
               {
                 "kind": "const",
@@ -261,6 +261,28 @@ export type SolfaiManager = {
           }
         },
         {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "etfTokenVaultId"
+              }
+            ]
+          }
+        },
+        {
           "name": "userFunding",
           "writable": true,
           "pda": {
@@ -383,6 +405,9 @@ export type SolfaiManager = {
           "writable": true
         },
         {
+          "name": "vault"
+        },
+        {
           "name": "etfTokenMint",
           "writable": true
         },
@@ -487,6 +512,28 @@ export type SolfaiManager = {
           }
         },
         {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "etfTokenVaultId"
+              }
+            ]
+          }
+        },
+        {
           "name": "userFunding",
           "writable": true,
           "pda": {
@@ -530,7 +577,7 @@ export type SolfaiManager = {
             "seeds": [
               {
                 "kind": "account",
-                "path": "etfVault"
+                "path": "user"
               },
               {
                 "kind": "const",
@@ -756,6 +803,10 @@ export type SolfaiManager = {
           },
           {
             "name": "fundedAmount",
+            "type": "u64"
+          },
+          {
+            "name": "mintedAmount",
             "type": "u64"
           },
           {

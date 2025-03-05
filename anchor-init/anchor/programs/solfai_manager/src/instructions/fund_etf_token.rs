@@ -22,6 +22,16 @@ pub struct FundEtfToken<'info> {
         bump = etf_vault.bump,
     )]
     pub etf_vault: Account<'info, EtfTokenVault>,
+    
+    #[account(
+        mut,
+        seeds = [
+            b"vault".as_ref(),
+            etf_token_vault_id.to_le_bytes().as_ref(),
+         ],
+        bump,
+    )]
+    pub vault: SystemAccount<'info>,
 
     #[account(
         init,
@@ -74,7 +84,7 @@ impl<'info> FundEtfToken<'info> {
             self.system_program.to_account_info(),
             system_program::Transfer {
                 from: self.user.to_account_info(),
-                to: self.etf_vault.to_account_info(),
+                to: self.vault.to_account_info(),
             },
         );
 

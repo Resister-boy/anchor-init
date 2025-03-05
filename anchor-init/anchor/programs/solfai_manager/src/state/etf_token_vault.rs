@@ -18,6 +18,7 @@ pub struct EtfTokenVault {
     pub description: String,
 
     pub funded_amount: u64,
+    pub minted_amount: u64,
     pub swapped_sol_amount: u64,
     pub funding_goal: u64,
     pub funding_start_time: u64,

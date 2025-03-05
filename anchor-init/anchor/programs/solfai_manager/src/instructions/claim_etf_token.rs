@@ -1,9 +1,8 @@
 use anchor_lang::prelude::*;
 use anchor_spl::associated_token::AssociatedToken;
-use anchor_spl::associated_token::{self, Create};
+use anchor_spl::associated_token;
 use anchor_spl::token::{self, Mint, Token, TokenAccount};
 use num_bigint::BigUint;
-use num_traits::One;
 use num_traits::ToPrimitive;
 use crate::errors::*;
 use crate::state::EtfTokenVault;
@@ -77,7 +76,6 @@ impl<'info> ClaimEtfToken<'info> {
         self.mint_etf_tokens(etf_token_vault_id)?;
 
         self.user_funding.claimed = true;
-        self.etf_vault.funded_amount -= self.user_funding.total_amount;
 
         Ok(())
     }
@@ -112,7 +110,8 @@ impl<'info> ClaimEtfToken<'info> {
             ),
             total_amount, // TODO: change amount of tokens to mint
         )?;
-
+        
+        self.etf_vault.minted_amount += total_amount;
         self.user_funding.minted_amount = total_amount;
         msg!("minted {}", self.user_funding.minted_amount);
 

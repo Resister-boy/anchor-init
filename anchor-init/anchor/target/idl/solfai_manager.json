@@ -101,7 +101,7 @@
             "seeds": [
               {
                 "kind": "account",
-                "path": "etf_vault"
+                "path": "user"
               },
               {
                 "kind": "const",
@@ -255,6 +255,28 @@
           }
         },
         {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "etf_token_vault_id"
+              }
+            ]
+          }
+        },
+        {
           "name": "user_funding",
           "writable": true,
           "pda": {
@@ -377,6 +399,9 @@
           "writable": true
         },
         {
+          "name": "vault"
+        },
+        {
           "name": "etf_token_mint",
           "writable": true
         },
@@ -481,6 +506,28 @@
           }
         },
         {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  118,
+                  97,
+                  117,
+                  108,
+                  116
+                ]
+              },
+              {
+                "kind": "arg",
+                "path": "etf_token_vault_id"
+              }
+            ]
+          }
+        },
+        {
           "name": "user_funding",
           "writable": true,
           "pda": {
@@ -524,7 +571,7 @@
             "seeds": [
               {
                 "kind": "account",
-                "path": "etf_vault"
+                "path": "user"
               },
               {
                 "kind": "const",
@@ -750,6 +797,10 @@
           },
           {
             "name": "funded_amount",
+            "type": "u64"
+          },
+          {
+            "name": "minted_amount",
             "type": "u64"
           },
           {
