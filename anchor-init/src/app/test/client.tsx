@@ -32,8 +32,6 @@ const TestClient = () => {
     swapToken,
   } = useSolFAI();
 
-  console.log(state);
-
   const initConfigMutation = useMutation({
     mutationKey: ["initializeConfig"],
     mutationFn: initializeConfig,

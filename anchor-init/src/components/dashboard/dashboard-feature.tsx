@@ -27,7 +27,7 @@ export default function DashboardFeature() {
   } = useChatContext();
   const [mint, setMint] = useState("");
   const [vault, setVault] = useState("");
-  const { mintToken, initializeFund } = useSolFAI();
+  const { state, program, mintToken, initializeFund } = useSolFAI();
   const [isFundraisingModalOpen, setIsFundraisingModalOpen] = useState(false);
   const router = useRouter();
 
@@ -60,7 +60,8 @@ export default function DashboardFeature() {
 
   const handleAddFunds = () => {
     setIsFundraisingModalOpen(false);
-    router.push("/fundraising");
+    const vaultId = state.etfTokenCount.add(new anchor.BN(1)).toNumber();
+    router.push(`/fund/detail/${vaultId}`);
   };
 
   const initFundMutation = useMutation({
@@ -78,7 +79,6 @@ export default function DashboardFeature() {
     onSuccess: (data) => {
       setMint(data ?? "");
       if (metadata && data) {
-        console.log("펀드레이징 시작");
         initFundMutation.mutate({
           mint: data,
           name: metadata?.name,
@@ -101,10 +101,10 @@ export default function DashboardFeature() {
   }, [metadata]);
 
   return (
-    <div className="relative pb-16 bg-white mb-24">
+    <div className="relative min-h-screen pb-16 bg-white mb-24 overflow-hidden">
       {/* AiSHARES 타이틀 */}
       <div
-        className="w-dvw pt-12 pb-5 text-black"
+        className="w-screen"
         style={{
           backgroundColor: "rgba(123, 217, 56, 1)",
           paddingLeft: "40px",
