@@ -101,10 +101,10 @@ export default function DashboardFeature() {
   }, [metadata]);
 
   return (
-    <div className="relative min-h-screen pb-16 bg-white mb-24">
+    <div className="relative pb-16 bg-white mb-24">
       {/* AiSHARES 타이틀 */}
       <div
-        className="mx-4"
+        className="w-dvw pt-12 pb-5 text-black"
         style={{
           backgroundColor: "rgba(123, 217, 56, 1)",
           paddingLeft: "40px",

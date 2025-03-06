@@ -7,46 +7,50 @@ export default function FundraisingList() {
   return (
     <div>
       <div
-        className="p-8 text-black"
-        style={{ backgroundColor: "rgba(247, 139, 219, 1)" }}
+        className="w-dvw pt-12 pb-5 text-black"
+        style={{ 
+          backgroundColor: "rgba(247, 139, 219, 1)",
+        }}
       >
-        <h1 className="text-4xl font-bold mb-2">$COOCIE</h1>
-        <p className="mb-6">
-          Use cookie.fun to find leading coins in Agents, Infra, and DeFAI
-          sectors with growing mindshare. Sell if mindshare drops 20% from peak
-          or below sector average.
-        </p>
+        <div className="px-8">
+          <h1 className="text-4xl font-bold mb-2">$COOCIE</h1>
+          <p className="mb-6">
+            Use cookie.fun to find leading coins in Agents, Infra, and DeFAI
+            sectors with growing mindshare. Sell if mindshare drops 20% from peak
+            or below sector average.
+          </p>
 
-        <div className="flex gap-2">
-          <div className="flex-1 bg-white p-4 rounded w-full">
-            <p className="text-sm">Fundraising Status</p>
-            <h2 className="text-4xl font-bold">198 / 200 SOL (99%)</h2>
-          </div>
-          <div className=" flex-1 bg-white rounded w-full md:w-64 ml-auto">
-            <div className="flex justify-between items-center border-b border-y-black py-1 px-2">
-              <p className="text-sm">SOL</p>
-              <div className="flex flex-col items-end">
-                <p className="text-sm">you fund</p>
-                <p>0</p>
+          <div className="flex gap-2">
+            <div className="flex-1 bg-white p-4 rounded w-full">
+              <p className="text-sm">Fundraising Status</p>
+              <h2 className="text-4xl font-bold">198 / 200 SOL (99%)</h2>
+            </div>
+            <div className=" flex-1 bg-white rounded w-full md:w-64 ml-auto">
+              <div className="flex justify-between items-center border-b border-y-black py-1 px-2">
+                <p className="text-sm">SOL</p>
+                <div className="flex flex-col items-end">
+                  <p className="text-sm">you fund</p>
+                  <p>0</p>
+                </div>
+              </div>
+              <div className="flex justify-between items-center py-1 px-2">
+                <p className="text-sm">COOCIE</p>
+                <div className="flex flex-col items-end">
+                  <p className="text-sm">you get</p>
+                  <p>0.000</p>
+                </div>
               </div>
             </div>
-            <div className="flex justify-between items-center py-1 px-2">
-              <p className="text-sm">COOCIE</p>
-              <div className="flex flex-col items-end">
-                <p className="text-sm">you get</p>
-                <p>0.000</p>
-              </div>
-            </div>
           </div>
-        </div>
 
-        <div className="flex justify-end mt-4">
-          <button
-            className="bg-black text-white px-4 py-2 rounded text-sm"
-            onClick={() => setIsAllocationModalOpen(true)}
-          >
-            ADD FUNDS
-          </button>
+          <div className="flex justify-end mt-4">
+            <button
+              className="bg-black text-white px-4 py-2 rounded text-sm"
+              onClick={() => setIsAllocationModalOpen(true)}
+            >
+              ADD FUNDS
+            </button>
+          </div>
         </div>
       </div>
 
