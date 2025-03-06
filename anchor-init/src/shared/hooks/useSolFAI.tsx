@@ -119,7 +119,6 @@ export const useSolFAI = () => {
     try {
       if (provider && program) {
         const vaults = await (program.account as any).etfTokenVault.all();
-        console.log(vaults);
         return vaults;
       }
       return null;
@@ -181,6 +180,7 @@ export const useSolFAI = () => {
           umi.use(walletAdapterIdentity(provider.wallet));
           const mint = generateSigner(umi);
 
+          console.log(mint);
           const txLayout = createFungible(umi, {
             name,
             symbol,

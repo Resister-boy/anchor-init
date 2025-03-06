@@ -1,19 +1,61 @@
 "use client";
 
+import { useChatContext } from "@/context/chat/ChatContext";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useCallback, useState } from "react";
+import CommonChat from "@/components/chat/common-chat/common-chat-feature";
+import InitChat from "@/components/chat/init-chat/init-chat-feature";
+import { ChatProgressType } from "@/shared/types/data/chat";
+import { useSolFAI } from "@/shared/hooks/useSolFAI";
+import { useMutation } from "@tanstack/react-query";
+import * as anchor from "@coral-xyz/anchor";
 
 export default function DashboardFeature() {
-  const [prompt, setPrompt] = useState("");
+  const {
+    input,
+    setInput,
+    commonConversations,
+    fundConversations,
+    recent,
+    fundRecent,
+    status,
+    metadata,
+    setRecent,
+    setFundRecent,
+    setCommonConversations,
+    setFundConversations,
+  } = useChatContext();
+  const [mint, setMint] = useState("");
+  const [vault, setVault] = useState("");
+  const { mintToken, initializeFund } = useSolFAI();
   const [isFundraisingModalOpen, setIsFundraisingModalOpen] = useState(false);
   const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!prompt.trim()) return;
+    if (!input.trim()) return;
 
-    console.log("프롬프트 제출:", prompt);
-    setPrompt("");
+    console.log("프롬프트 제출:", input);
+    if (status === ChatProgressType.fundraise) {
+      fundRecent && setFundConversations((prev) => [...prev, fundRecent]);
+      setFundRecent({
+        value: input,
+        json: "",
+        timestamp: new Date().toISOString(),
+        type: "user",
+        progress: ChatProgressType.fundraise,
+      });
+    } else {
+      recent && setCommonConversations((prev) => [...prev, recent]);
+      setRecent({
+        value: input,
+        timestamp: new Date().toISOString(),
+        type: "user",
+        progress: ChatProgressType.common,
+      });
+    }
+
+    setInput("");
   };
 
   const handleAddFunds = () => {
@@ -21,10 +63,48 @@ export default function DashboardFeature() {
     router.push("/fundraising");
   };
 
+  const initFundMutation = useMutation({
+    mutationKey: ["initializeFund"],
+    mutationFn: initializeFund,
+    onSuccess: (data) => {
+      setVault(data?.toBase58() ?? "");
+      setIsFundraisingModalOpen(true);
+    },
+  });
+
+  const mintTokenMutation = useMutation({
+    mutationKey: ["mintToken"],
+    mutationFn: mintToken,
+    onSuccess: (data) => {
+      setMint(data ?? "");
+      if (metadata && data) {
+        console.log("펀드레이징 시작");
+        initFundMutation.mutate({
+          mint: data,
+          name: metadata?.name,
+          description: metadata?.description,
+          amount: new anchor.BN(20_000_000_000),
+        });
+      }
+    },
+  });
+
+  const handleFundrasing = useCallback(() => {
+    if (status === ChatProgressType.done && metadata) {
+      console.log(status, metadata);
+      mintTokenMutation.mutate({
+        name: metadata.name,
+        symbol: metadata.symbol,
+        uri: metadata.uri,
+      });
+    }
+  }, [metadata]);
+
   return (
-    <div className="relative min-h-screen pb-16 bg-white">
+    <div className="relative min-h-screen pb-16 bg-white mb-24">
       {/* AiSHARES 타이틀 */}
       <div
+        className="mx-4"
         style={{
           backgroundColor: "rgba(123, 217, 56, 1)",
           paddingLeft: "40px",
@@ -44,33 +124,54 @@ export default function DashboardFeature() {
           </div>
         </div>
       </div>
-
-      {/* 토큰 생성 메시지 */}
-      <div className="p-4">
-        <div className="mb-4">
-          <div className="flex items-start">
-            <div className="bg-yellow-300 text-black rounded-full w-6 h-6 flex items-center justify-center mr-2 flex-shrink-0">
-              <span>A</span>
-            </div>
-            <div>
-              <p className="text-sm">
-                Create $COOCIE token and start fundraising?
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="flex ml-8">
-          <button
-            className="bg-black text-white font-bold px-4 py-1 text-sm rounded mr-2"
-            onClick={() => setIsFundraisingModalOpen(true)}
-          >
-            YES
-          </button>
-          <button className="border border-black font-bold px-4 py-1 text-sm rounded">
-            START OVER
-          </button>
-        </div>
+      <div className="mt-4">
+        <InitChat text="Please enter your trading strategy." />
+        {commonConversations.map((c, index) => {
+          return (
+            <CommonChat
+              key={index}
+              value={c.value}
+              timestamp={c.timestamp}
+              type={c.type}
+              progress={c.progress}
+            />
+          );
+        })}
+        {status <= ChatProgressType.confirm && recent && (
+          <CommonChat
+            value={recent.value}
+            timestamp={recent.timestamp}
+            type={recent.type}
+            progress={recent.progress}
+          />
+        )}
       </div>
+      {status >= ChatProgressType.fundraise && (
+        <div className="mt-4 border-t-2 pt-4">
+          <InitChat text="Enter the metadata for the ETF Token. name, symbol, and uri are required." />
+          {fundConversations.map((c, index) => {
+            return (
+              <CommonChat
+                key={index}
+                value={c.value}
+                timestamp={c.timestamp}
+                type={c.type}
+                progress={c.progress}
+                handler={() => handleFundrasing()}
+              />
+            );
+          })}
+          {status >= ChatProgressType.fundraise && fundRecent && (
+            <CommonChat
+              value={fundRecent.value}
+              timestamp={fundRecent.timestamp}
+              type={fundRecent.type}
+              progress={fundRecent.progress}
+              handler={() => handleFundrasing()}
+            />
+          )}
+        </div>
+      )}
 
       {/* 프롬프트 Input */}
       <div className="fixed bottom-0 left-0 right-0 bg-white">
@@ -88,8 +189,8 @@ export default function DashboardFeature() {
               type="text"
               placeholder="Prompt your strategy"
               className="w-full px-4 py-2 border border-gray-500 rounded-l-md focus:outline-none"
-              value={prompt}
-              onChange={(e) => setPrompt(e.target.value)}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
             />
             <button
               type="submit"
@@ -123,13 +224,14 @@ export default function DashboardFeature() {
               </p>
               <div className="flex items-center mb-3">
                 <span className="text-sm font-mono">
-                  <b>CA:</b>C4GwTnzkgYA2sSXEAH3yTzCWUunTzD23niXud8RjYTYM
+                  <b>CA:</b>
+                  {mint}
                 </span>
               </div>
               <div className="flex items-center mb-6">
                 <span className="text-sm font-mono">
                   <b>Start fundraising here:</b>
-                  C4GwTnzkgYA2sSXEAH3yTzCWUunTzD23niXud8RjYTYM
+                  {vault}
                 </span>
               </div>
 

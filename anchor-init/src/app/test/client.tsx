@@ -55,6 +55,7 @@ const TestClient = () => {
     mutationKey: ["mintToken"],
     mutationFn: mintToken,
     onSuccess: (data) => {
+      setDevnetToken(data ?? "");
       console.log(data);
     },
   });
@@ -63,7 +64,7 @@ const TestClient = () => {
     mutationKey: ["createToken"],
     mutationFn: createToken,
     onSuccess: (data) => {
-      setLocalnetToken(data?.toBase58() ?? "");
+      setDevnetToken(data?.toBase58() ?? "");
       console.log(data?.toBase58());
     },
   });
@@ -168,7 +169,7 @@ const TestClient = () => {
           >
             Mint SPL Token(Localnet)
           </button>
-          {localnetToken && <p>{localnetToken}</p>}
+          {devnetToken && <p>{devnetToken}</p>}
         </div>
         <div className="p-4 w-screen flex flex-col space-y-2 items-start justify-start">
           <h3 className="font-semibold">Initialize Fund</h3>
@@ -176,7 +177,7 @@ const TestClient = () => {
             className="w-44 py-2 rounded-md bg-blue-500 text-sm"
             onClick={() => {
               initFundMutation.mutate({
-                mint: localnetToken,
+                mint: devnetToken,
                 name: "SOLFAI",
                 description: "Hello, World",
                 amount: new anchor.BN(20_000_000_000),
@@ -195,7 +196,7 @@ const TestClient = () => {
               if (current) {
                 fundTokenMutation.mutate({
                   vaultId: new anchor.BN(current),
-                  amount: new anchor.BN(20_000_000_000),
+                  amount: new anchor.BN(1_000_000),
                 });
               }
             }}
