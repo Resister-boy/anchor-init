@@ -61,12 +61,22 @@ export const useSolFAI = () => {
             program.programId
           );
 
+          let [vaultPda, vaultPdaBump] =
+            anchor.web3.PublicKey.findProgramAddressSync(
+              [
+                Buffer.from("vault"),
+                new anchor.BN(vaultId).toArrayLike(Buffer, "le", 8),
+              ],
+              program.programId
+            );
+
           const tx = await program.methods
             .initializeEtfTokenVault(name, description, amount)
             .accounts({
               creator: provider.publicKey,
               etfVault: etfVaultPda,
               etfTokenMint: new PublicKey(mint),
+              vault: vaultPda,
             })
             .rpc();
 
@@ -109,6 +119,7 @@ export const useSolFAI = () => {
     try {
       if (provider && program) {
         const vaults = await (program.account as any).etfTokenVault.all();
+        console.log(vaults);
         return vaults;
       }
       return null;

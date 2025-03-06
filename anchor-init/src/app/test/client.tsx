@@ -316,6 +316,10 @@ const TestClient = () => {
                 <p>goal: {fund.account.fundingGoal.toNumber()}</p>
                 <p>current: {fund.account.fundedAmount.toNumber()}</p>
                 <p>participants: {fund.account.fundingUserCount.toNumber()}</p>
+                <p>minted amount: {fund.account.mintedAmount.toNumber()}</p>
+                <p>
+                  swaped sol amount: {fund.account.swappedSolAmount.toNumber()}
+                </p>
                 <p>status: {fund.account.status}</p>
               </div>
             );

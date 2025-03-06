@@ -1,5 +1,5 @@
 {
-  "address": "3XNXLjZs5JYeY4PgbtSs9W3ATLYaB6JPhQmirKBeowC4",
+  "address": "DQ1qYSDJ9ABu3S6R1xf7Gdr25wMFKstmQXXyF7xfSeCM",
   "metadata": {
     "name": "solfai_manager",
     "version": "0.1.0",
@@ -68,7 +68,7 @@
             "seeds": [
               {
                 "kind": "account",
-                "path": "etf_vault"
+                "path": "user"
               },
               {
                 "kind": "const",
@@ -133,6 +133,22 @@
                   101, 116, 102, 95, 116, 111, 107, 101, 110, 95, 118, 97, 117,
                   108, 116
                 ]
+              },
+              {
+                "kind": "arg",
+                "path": "etf_token_vault_id"
+              }
+            ]
+          }
+        },
+        {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [118, 97, 117, 108, 116]
               },
               {
                 "kind": "arg",
@@ -223,6 +239,9 @@
           "writable": true
         },
         {
+          "name": "vault"
+        },
+        {
           "name": "etf_token_mint",
           "writable": true
         },
@@ -293,6 +312,22 @@
           }
         },
         {
+          "name": "vault",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [118, 97, 117, 108, 116]
+              },
+              {
+                "kind": "arg",
+                "path": "etf_token_vault_id"
+              }
+            ]
+          }
+        },
+        {
           "name": "user_funding",
           "writable": true,
           "pda": {
@@ -325,7 +360,7 @@
             "seeds": [
               {
                 "kind": "account",
-                "path": "etf_vault"
+                "path": "user"
               },
               {
                 "kind": "const",
@@ -466,6 +501,10 @@
           },
           {
             "name": "funded_amount",
+            "type": "u64"
+          },
+          {
+            "name": "minted_amount",
             "type": "u64"
           },
           {
