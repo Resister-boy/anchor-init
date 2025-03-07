@@ -365,7 +365,12 @@ export default function FundDetail() {
                     {index + 1}
                   </td>
                   <td className="border border-gray-300 p-2 text-center">
-                    <div className="flex items-center justify-center  cursor-pointer">
+                    <div
+                      className="flex items-center justify-center cursor-pointer"
+                      onClick={() =>
+                        copyToClipboard(user.account.user.toBase58())
+                      }
+                    >
                       {`${user.account.user
                         .toBase58()
                         .substring(0, 4)}...${user.account.user
@@ -377,9 +382,6 @@ export default function FundDetail() {
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
-                        onClick={() =>
-                          copyToClipboard(user.account.user.toBase58())
-                        }
                       >
                         <path
                           strokeLinecap="round"
