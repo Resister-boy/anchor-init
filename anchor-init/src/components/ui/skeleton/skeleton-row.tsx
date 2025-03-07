@@ -1,4 +1,4 @@
-export const SkeletonRow = () => (
+export const SkeletonRow1 = () => (
   <tr>
     <td className="p-2 text-center border border-gray-300">
       <div className="h-6 w-8 mx-auto bg-gray-200 rounded animate-pulse"></div>
@@ -20,6 +20,23 @@ export const SkeletonRow = () => (
     </td>
     <td className="p-2 text-center border border-gray-300">
       <div className="h-8 w-32 mx-auto bg-gray-200 rounded animate-pulse"></div>
+    </td>
+  </tr>
+);
+
+export const SkeletonRow2 = () => (
+  <tr>
+    <td className="p-2 text-center border border-gray-300">
+      <div className="h-6 w-8 mx-auto bg-gray-200 rounded animate-pulse"></div>
+    </td>
+    <td className="p-2 text-center border border-gray-300">
+      <div className="h-6 w-32 mx-auto bg-gray-200 rounded animate-pulse"></div>
+    </td>
+    <td className="p-2 text-center border border-gray-300">
+      <div className="h-6 w-16 mx-auto bg-gray-200 rounded animate-pulse"></div>
+    </td>
+    <td className="p-2 text-center border border-gray-300">
+      <div className="h-6 w-24 mx-auto bg-gray-200 rounded animate-pulse"></div>
     </td>
   </tr>
 );

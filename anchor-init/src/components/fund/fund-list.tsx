@@ -6,12 +6,12 @@ import { useSolFAI } from "@/shared/hooks/useSolFAI";
 import { useMutation } from "@tanstack/react-query";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { toast } from "react-hot-toast";
-import { SkeletonRow } from "../ui/skeleton/skeleton-row";
+import { SkeletonRow1 } from "../ui/skeleton/skeleton-row";
 
 export default function FundList() {
   const [fundList, setFundList] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { fetchAllVaults, provider, program, state } = useSolFAI();
+  const { fetchAllVaults, provider, program } = useSolFAI();
   const wallet = useWallet();
 
   const fetchAllVaultsMutation = useMutation({
@@ -92,14 +92,14 @@ export default function FundList() {
           <tbody>
             {isLoading || fetchAllVaultsMutation.isPending ? (
               <>
-                <SkeletonRow />
-                <SkeletonRow />
-                <SkeletonRow />
-                <SkeletonRow />
-                <SkeletonRow />
-                <SkeletonRow />
-                <SkeletonRow />
-                <SkeletonRow />
+                <SkeletonRow1 />
+                <SkeletonRow1 />
+                <SkeletonRow1 />
+                <SkeletonRow1 />
+                <SkeletonRow1 />
+                <SkeletonRow1 />
+                <SkeletonRow1 />
+                <SkeletonRow1 />
               </>
             ) : fundList && fundList.length > 0 ? (
               fundList.map((fund, index) => (
@@ -123,7 +123,7 @@ export default function FundList() {
                   </td>
                   <td className="p-2 text-center border border-gray-300">
                     <div
-                      className="flex items-center justify-center"
+                      className="flex items-center justify-center cursor-pointer"
                       onClick={() =>
                         copyToClipboard(fund.account.etfTokenMint.toBase58())
                       }
@@ -139,7 +139,7 @@ export default function FundList() {
                             )}`}
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
-                            className="h-4 w-4 ml-1 cursor-pointer"
+                            className="h-4 w-4 ml-1"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -159,11 +159,11 @@ export default function FundList() {
                   </td>
                   <td className="p-2 text-center border border-gray-300">
                     {fund.account?.fundingGoal && fund.account?.fundedAmount
-                      ? `${Math.floor(
+                      ? `${
                           (fund.account.fundedAmount.toNumber() /
                             fund.account.fundingGoal.toNumber()) *
-                            100
-                        )}%`
+                          100
+                        }%`
                       : "0%"}
                   </td>
                   <td className="p-2 text-center border border-gray-300">
