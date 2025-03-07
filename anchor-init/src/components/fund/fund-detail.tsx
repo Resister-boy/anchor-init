@@ -16,7 +16,7 @@ export default function FundDetail() {
   const [fundInfo, setFundInfo] = useState<any>(null);
   const [solAmount, setSolAmount] = useState<number | null>(null);
   const [tokenAmount, setTokenAmount] = useState<number>(0);
-  const { fetchAllVaults, fetchFund, fundToken, provider, program } =
+  const { fetchAllVaults, fetchFund, fundToken, swapToken, provider, program } =
     useSolFAI();
   const wallet = useWallet();
   const params = useParams();
@@ -88,6 +88,27 @@ export default function FundDetail() {
       toast.error("펀딩에 실패했습니다", {
         duration: 2000,
         position: "bottom-center",
+      });
+    },
+  });
+
+  const swapTokenMutation = useMutation({
+    mutationKey: ["swapToken", vaultId],
+    mutationFn: swapToken,
+    onSuccess: (data) => {
+      console.log("Swap success:", data);
+      fetchAllVaultsMutation.mutate();
+      fetchFundingUser.mutate();
+      toast.success("스왑이 완료되었습니다", {
+        duration: 2000,
+        position: "top-center",
+      });
+    },
+    onError: (error) => {
+      console.error("Swap error:", error);
+      toast.error("스왑에 실패했습니다", {
+        duration: 2000,
+        position: "top-center",
       });
     },
   });
@@ -236,6 +257,38 @@ export default function FundDetail() {
                 </div>
               </div>
             </div>
+
+            <div className="bg-white rounded">
+              <div className="flex justify-between items-center border-b border-gray-200 p-3">
+                <div>
+                  <p className="text-2xl text-black">
+                    {fundInfo?.account?.etfName}
+                  </p>
+                </div>
+                <div className="flex flex-col items-end">
+                  <p className="text-xs text-gray-500">you sell</p>
+                  <input
+                    type="number"
+                    min="0"
+                    max="20"
+                    step="0.001"
+                    value={solAmount === null ? "" : solAmount}
+                    onChange={(e) => handleSolInput(e.target.value)}
+                    placeholder="0"
+                    className="text-right w-24 outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  />
+                </div>
+              </div>
+              <div className="flex justify-between items-center p-3">
+                <div>
+                  <p className="text-2xl text-black">SOL</p>
+                </div>
+                <div className="flex flex-col items-end">
+                  <p className="text-xs text-gray-500">you get</p>
+                  <p>{tokenAmount.toLocaleString()}</p>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="flex justify-end mt-4">
@@ -253,6 +306,25 @@ export default function FundDetail() {
               }}
             >
               ADD FUNDS
+            </button>
+            <button
+              className="bg-black text-white px-6 py-2 rounded"
+              onClick={() => {
+                if (!solAmount || solAmount <= 0) {
+                  toast.error("SOL 수량을 입력해주세요", {
+                    duration: 2000,
+                    position: "top-center",
+                  });
+                  return;
+                }
+                swapTokenMutation.mutate({
+                  vaultId: new BN(parseInt(vaultId)),
+                  user: wallet.publicKey?.toBase58() ?? "",
+                  mint: fundInfo?.account?.etfTokenMint?.toBase58() ?? "",
+                });
+              }}
+            >
+              SWAP TOKEN
             </button>
           </div>
         </div>
