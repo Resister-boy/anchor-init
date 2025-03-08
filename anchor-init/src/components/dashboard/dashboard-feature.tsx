@@ -93,7 +93,7 @@ export default function DashboardFeature() {
           mint: data,
           name: metadata?.name,
           description: metadata?.description,
-          amount: new anchor.BN(20_000_000_000),
+          amount: new anchor.BN(5_000_000_000),
         });
       }
     },
@@ -233,7 +233,7 @@ export default function DashboardFeature() {
                 </h2>
                 <div className="p-6">
                   <p className="text-base mb-4">
-                    Congratulations! $COOCIE has been successfully{" "}
+                    Congratulations! ${metadata?.symbol} has been successfully{" "}
                     <b>TOKENIZED</b> with its own agent!
                   </p>
                   <div className="flex items-center mb-3">
