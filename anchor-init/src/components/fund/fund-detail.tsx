@@ -6,7 +6,10 @@ import { useSolFAI } from "@/shared/hooks/useSolFAI";
 import { useParams } from "next/navigation";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { BN } from "@coral-xyz/anchor";
-import { SkeletonRow2 } from "@/components/ui/skeleton/skeleton-row";
+import {
+  SkeletonFundDetail,
+  SkeletonRow2,
+} from "@/components/ui/skeleton/skeleton-ui";
 import { toast } from "react-hot-toast";
 
 export default function FundDetail() {
@@ -243,117 +246,122 @@ export default function FundDetail() {
 
   return (
     <div>
-      <div
-        className="w-dvw pt-12 pb-12"
-        style={{
-          backgroundColor: "rgba(247, 139, 219, 1)",
-        }}
-      >
-        <div className="px-8">
-          <h1 className="text-5xl font-bold mb-4">
-            ${fundInfo?.account?.etfName}
-          </h1>
-          <p className="text-2xl">{fundInfo?.account?.description}</p>
+      {isLoading || fetchAllVaultsMutation.isPending ? (
+        <SkeletonFundDetail />
+      ) : (
+        <div
+          className="w-dvw pt-12 pb-12"
+          style={{
+            backgroundColor: "rgba(247, 139, 219, 1)",
+          }}
+        >
+          <div className="px-8">
+            <h1 className="text-5xl font-bold mb-4">
+              ${fundInfo?.account?.etfName}
+            </h1>
+            <p className="text-2xl">{fundInfo?.account?.description}</p>
 
-          <div className="mt-8 grid grid-cols-3 gap-4">
-            <div className="bg-white p-4 rounded">
-              <p className="text-sm mb-1">Fundraising Status</p>
-              <h2 className="text-3xl font-bold">
-                {`${fundedAmount} / ${fundingGoal}
-                 SOL (${fundingPercentage * 100}%)`}
-              </h2>
-            </div>
+            <div className="mt-8 grid grid-cols-3 gap-4">
+              <div className="bg-white p-4 rounded">
+                <p className="text-sm mb-1">Fundraising Status</p>
+                <h2 className="text-3xl font-bold">
+                  {`${fundedAmount} / ${fundingGoal}
+                   SOL (${fundingPercentage * 100}%)`}
+                </h2>
+              </div>
 
-            <div className="bg-white p-4 rounded">
-              <p className="text-sm mb-1">Your Allocation</p>
-              <h2 className="text-3xl font-bold">
-                {`${fundInfo?.account?.mintedAmount.toNumber()} ${
-                  fundInfo?.account?.etfName
-                } (${
-                  (fundInfo?.account?.mintedAmount.toNumber() / 1_000_000_000) *
-                  100
-                }%)`}
-              </h2>
-            </div>
+              <div className="bg-white p-4 rounded">
+                <p className="text-sm mb-1">Your Allocation</p>
+                <h2 className="text-3xl font-bold">
+                  {`${fundInfo?.account?.mintedAmount.toNumber()} ${
+                    fundInfo?.account?.etfName
+                  } (${
+                    (fundInfo?.account?.mintedAmount.toNumber() /
+                      1_000_000_000) *
+                    100
+                  }%)`}
+                </h2>
+              </div>
 
-            <div className="bg-white rounded">
-              <div className="flex justify-between items-center border-b border-gray-200 p-3">
-                <div>
-                  <p className="text-2xl text-black">SOL</p>
+              <div className="bg-white rounded">
+                <div className="flex justify-between items-center border-b border-gray-200 p-3">
+                  <div>
+                    <p className="text-2xl text-black">SOL</p>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <p className="text-xs text-gray-500">you fund</p>
+                    <input
+                      type="number"
+                      min="0"
+                      max="20"
+                      step="0.001"
+                      value={solAmount === null ? "" : solAmount}
+                      onChange={(e) => handleSolInput(e.target.value)}
+                      placeholder="0"
+                      className="text-right w-24 outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    />
+                  </div>
                 </div>
-                <div className="flex flex-col items-end">
-                  <p className="text-xs text-gray-500">you fund</p>
-                  <input
-                    type="number"
-                    min="0"
-                    max="20"
-                    step="0.001"
-                    value={solAmount === null ? "" : solAmount}
-                    onChange={(e) => handleSolInput(e.target.value)}
-                    placeholder="0"
-                    className="text-right w-24 outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                  />
+                <div className="flex justify-between items-center p-3">
+                  <div>
+                    <p className="text-2xl text-black">
+                      {fundInfo?.account?.etfName}
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <p className="text-xs text-gray-500">you get</p>
+                    <p>{tokenAmount.toLocaleString()}</p>
+                  </div>
                 </div>
               </div>
-              <div className="flex justify-between items-center p-3">
-                <div>
-                  <p className="text-2xl text-black">
-                    {fundInfo?.account?.etfName}
-                  </p>
-                </div>
-                <div className="flex flex-col items-end">
-                  <p className="text-xs text-gray-500">you get</p>
-                  <p>{tokenAmount.toLocaleString()}</p>
-                </div>
-              </div>
             </div>
-          </div>
 
-          <div className="flex justify-end mt-4 space-x-2">
-            {fundInfo?.account?.status === 1 ? (
-              fundInfo?.account?.mintedAmount.toNumber() !== 0 ? (
-                <button
-                  className="bg-black text-white px-6 py-2 rounded"
-                  onClick={() => {
-                    swapTokenMutation.mutate({
-                      vaultId: new BN(parseInt(vaultId)),
-                      user: wallet.publicKey?.toBase58() ?? "",
-                      mint: fundInfo?.account?.etfTokenMint?.toBase58() ?? "",
-                    });
-                  }}
-                >
-                  SWAP
-                </button>
+            <div className="flex justify-end mt-4 space-x-2">
+              {fundInfo?.account?.status === 1 ? (
+                fundInfo?.account?.mintedAmount.toNumber() !== 0 ? (
+                  <button
+                    className="bg-black text-white px-6 py-2 rounded"
+                    onClick={() => {
+                      swapTokenMutation.mutate({
+                        vaultId: new BN(parseInt(vaultId)),
+                        user: wallet.publicKey?.toBase58() ?? "",
+                        mint: fundInfo?.account?.etfTokenMint?.toBase58() ?? "",
+                      });
+                    }}
+                  >
+                    SWAP
+                  </button>
+                ) : (
+                  <button
+                    className="bg-black text-white px-6 py-2 rounded"
+                    onClick={() => {
+                      claimTokenMutation.mutate();
+                    }}
+                  >
+                    CLAIM
+                  </button>
+                )
               ) : (
                 <button
                   className="bg-black text-white px-6 py-2 rounded"
                   onClick={() => {
-                    claimTokenMutation.mutate();
+                    if (!solAmount || solAmount <= 0) {
+                      toast.error("Please enter SOL amount", {
+                        duration: 2000,
+                        position: "top-center",
+                      });
+                      return;
+                    }
+                    fundTokenMutation.mutate();
                   }}
                 >
-                  CLAIM
+                  ADD FUNDS
                 </button>
-              )
-            ) : (
-              <button
-                className="bg-black text-white px-6 py-2 rounded"
-                onClick={() => {
-                  if (!solAmount || solAmount <= 0) {
-                    toast.error("Please enter SOL amount", {
-                      duration: 2000,
-                      position: "top-center",
-                    });
-                    return;
-                  }
-                  fundTokenMutation.mutate();
-                }}
-              >
-                ADD FUNDS
-              </button>
-            )}
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       <div className="p-4">
         <h2 className="text-xl font-bold mb-4">TOP INVESTORS</h2>

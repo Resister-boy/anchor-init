@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import * as React from "react";
 import { ReactNode, Suspense, useEffect, useRef } from "react";
 import toast, { Toaster } from "react-hot-toast";
@@ -15,8 +14,6 @@ import {
 import { WalletButton } from "../solana/solana-provider";
 
 export function UiLayout({ children }: { children: ReactNode }) {
-  const pathname = usePathname();
-
   return (
     <div className="h-full flex flex-col">
       <div className="navbar bg-white dark:text-neutral-content flex-col md:flex-row space-y-2 md:space-y-0 border-b border-gray-300">
@@ -37,15 +34,7 @@ export function UiLayout({ children }: { children: ReactNode }) {
         <AccountChecker />
       </ClusterChecker>
       <div className="flex-grow mx-4 lg:mx-auto">
-        <Suspense
-          fallback={
-            <div className="text-center my-32">
-              <span className="loading loading-spinner loading-lg"></span>
-            </div>
-          }
-        >
-          {children}
-        </Suspense>
+        {children}
         <Toaster position="bottom-right" />
       </div>
     </div>

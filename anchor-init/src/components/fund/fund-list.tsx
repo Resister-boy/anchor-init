@@ -6,7 +6,8 @@ import { useSolFAI } from "@/shared/hooks/useSolFAI";
 import { useMutation } from "@tanstack/react-query";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { toast } from "react-hot-toast";
-import { SkeletonRow1 } from "../ui/skeleton/skeleton-row";
+import { SkeletonRow1 } from "../ui/skeleton/skeleton-ui";
+import { SkeletonFundList } from "../ui/skeleton/skeleton-ui";
 
 export default function FundList() {
   const [fundList, setFundList] = useState<any[]>([]);
@@ -60,23 +61,27 @@ export default function FundList() {
 
   return (
     <div>
-      <div
-        className="w-dvw pt-12 pb-12"
-        style={{
-          backgroundColor: "rgba(123, 217, 56, 1)",
-        }}
-      >
-        <div className="text-left px-8">
-          <div>
-            <h1 className="text-5xl font-bold mb-4">FUND YOUR AiSHARES</h1>
-            <p className="text-2xl">
-              Launch and monetize on your own AI-led ETF
-              <br />
-              by just prompting in the desired strategy.
-            </p>
+      {isLoading || fetchAllVaultsMutation.isPending ? (
+        <SkeletonFundList />
+      ) : (
+        <div
+          className="w-dvw pt-12 pb-12"
+          style={{
+            backgroundColor: "rgba(123, 217, 56, 1)",
+          }}
+        >
+          <div className="text-left px-8">
+            <div>
+              <h1 className="text-5xl font-bold mb-4">FUND YOUR AiSHARES</h1>
+              <p className="text-2xl">
+                Launch and monetize on your own AI-led ETF
+                <br />
+                by just prompting in the desired strategy.
+              </p>
+            </div>
           </div>
         </div>
-      </div>
+      )}
       <div className="p-4">
         <table className="w-full border-collapse border border-gray-300">
           <thead className="bg-black text-white">
@@ -167,7 +172,7 @@ export default function FundList() {
                       : "0%"}
                   </td>
                   <td className="p-2 text-center border border-gray-300">
-                    {fund.account?.status === 2 ? (
+                    {fund.account?.status === 1 ? (
                       <Link
                         href={`/fund/detail/${fund.account?.id?.toNumber()}`}
                       >
