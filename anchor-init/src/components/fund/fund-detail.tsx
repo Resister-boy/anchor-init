@@ -311,41 +311,10 @@ export default function FundDetail() {
 
           <div className="flex justify-end mt-4 space-x-2">
             {fundInfo?.account?.status === 1 ? (
-              <button
-                className="bg-black text-white px-6 py-2 rounded"
-                onClick={() => {
-                  claimTokenMutation.mutate();
-                }}
-              >
-                CLAIM
-              </button>
-            ) : (
-              <>
+              fundInfo?.account?.mintedAmount.toNumber() !== 0 ? (
                 <button
                   className="bg-black text-white px-6 py-2 rounded"
                   onClick={() => {
-                    if (!solAmount || solAmount <= 0) {
-                      toast.error("Please enter SOL amount", {
-                        duration: 2000,
-                        position: "top-center",
-                      });
-                      return;
-                    }
-                    fundTokenMutation.mutate();
-                  }}
-                >
-                  ADD FUNDS
-                </button>
-                <button
-                  className="bg-black text-white px-6 py-2 rounded"
-                  onClick={() => {
-                    if (!solAmount || solAmount <= 0) {
-                      toast.error("Please enter SOL amount", {
-                        duration: 2000,
-                        position: "top-center",
-                      });
-                      return;
-                    }
                     swapTokenMutation.mutate({
                       vaultId: new BN(parseInt(vaultId)),
                       user: wallet.publicKey?.toBase58() ?? "",
@@ -353,9 +322,34 @@ export default function FundDetail() {
                     });
                   }}
                 >
-                  SWAP TOKEN
+                  SWAP
                 </button>
-              </>
+              ) : (
+                <button
+                  className="bg-black text-white px-6 py-2 rounded"
+                  onClick={() => {
+                    claimTokenMutation.mutate();
+                  }}
+                >
+                  CLAIM
+                </button>
+              )
+            ) : (
+              <button
+                className="bg-black text-white px-6 py-2 rounded"
+                onClick={() => {
+                  if (!solAmount || solAmount <= 0) {
+                    toast.error("Please enter SOL amount", {
+                      duration: 2000,
+                      position: "top-center",
+                    });
+                    return;
+                  }
+                  fundTokenMutation.mutate();
+                }}
+              >
+                ADD FUNDS
+              </button>
             )}
           </div>
         </div>
