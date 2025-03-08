@@ -273,13 +273,15 @@ export default function FundDetail() {
               <div className="bg-white p-4 rounded">
                 <p className="text-sm mb-1">Your Allocation</p>
                 <h2 className="text-3xl font-bold">
-                  {`${fundInfo?.account?.mintedAmount.toNumber()} ${
-                    fundInfo?.account?.etfName
-                  } (${
-                    (fundInfo?.account?.mintedAmount.toNumber() /
-                      1_000_000_000) *
-                    100
-                  }%)`}
+                  {fundInfo?.account?.status === 2
+                    ? `0 ${fundInfo?.account?.etfName} (0%)`
+                    : `${fundInfo?.account?.mintedAmount.toNumber()} ${
+                        fundInfo?.account?.etfName
+                      } (${
+                        (fundInfo?.account?.mintedAmount.toNumber() /
+                          1_000_000_000) *
+                        100
+                      }%)`}
                 </h2>
               </div>
 

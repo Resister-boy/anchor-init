@@ -187,9 +187,13 @@ export default function FundList() {
                         </button>
                       </Link>
                     ) : fund.account?.status === 2 ? (
-                      <button className="bg-gray-300 text-gray-600 px-4 py-1 rounded cursor-not-allowed">
-                        TERMINATED
-                      </button>
+                      <Link
+                        href={`/fund/detail/${fund.account?.id?.toNumber()}`}
+                      >
+                        <button className="bg-gray-300 text-gray-600 px-4 py-1 rounded">
+                          TERMINATED
+                        </button>
+                      </Link>
                     ) : (
                       <Link
                         href={`/fund/detail/${fund.account?.id?.toNumber()}`}
