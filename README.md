@@ -6,13 +6,10 @@
 2. Users can transfer SOL to the Fund, and once the Fund is fully funded, they can claim and receive the Token corresponding to the AI agent.
 3. Users can exchange the Token back to SOL.
 
-### Deploy Program
+### Program
 > Fund Factory Program that creates Funds.
 
 BhJaivSr483tJ2PqodLwZvE85hyRaUUWssqZyYhbqfFX, [SOLSCAN](https://solscan.io/account/BhJaivSr483tJ2PqodLwZvE85hyRaUUWssqZyYhbqfFX?cluster=devnet)
-
-### Deploy DEMO
-[DEMO](https://ai-shares.vercel.app)
 
 ### Program Entities
 
