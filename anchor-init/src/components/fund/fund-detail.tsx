@@ -343,6 +343,13 @@ export default function FundDetail() {
                     CLAIM
                   </button>
                 )
+              ) : fundInfo?.account?.status === 2 ? (
+                <button
+                  className="bg-gray-300 text-gray-600 px-6 py-2 rounded cursor-not-allowed"
+                  disabled
+                >
+                  ADD FUNDS
+                </button>
               ) : (
                 <button
                   className="bg-black text-white px-6 py-2 rounded"
