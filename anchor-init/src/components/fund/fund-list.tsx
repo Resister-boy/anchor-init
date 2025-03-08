@@ -115,12 +115,12 @@ export default function FundList() {
                   <td className="p-2 text-center border border-gray-300">
                     <span
                       className={`px-2 py-1 rounded text-xs ${
-                        fund.account?.status === 2
+                        fund.account?.status === 1
                           ? "bg-blue-400 text-black"
                           : "bg-yellow-400 text-black"
                       }`}
                     >
-                      {fund.account?.status === 2 ? "Launched" : "Raising"}
+                      {fund.account?.status === 1 ? "Launched" : "Raising"}
                     </span>
                   </td>
                   <td className="p-2 text-center border border-gray-300">

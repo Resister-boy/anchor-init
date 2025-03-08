@@ -112,7 +112,7 @@ export function SkeletonDashboard() {
   return (
     <div className="relative min-h-screen pb-16 bg-white mb-24 overflow-hidden">
       <div
-        className="w-screen"
+        className="w-screen animate-pulse"
         style={{
           backgroundColor: "rgba(123, 217, 56, 1)",
           paddingLeft: "40px",
