@@ -33,3 +33,6 @@ BhJaivSr483tJ2PqodLwZvE85hyRaUUWssqZyYhbqfFX, [SOLSCAN](https://solscan.io/accou
 
   └── README.md
 ```
+
+### Notification
+> To run this project locally, an OpenAI API key is required.
