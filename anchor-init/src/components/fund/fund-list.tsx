@@ -42,7 +42,7 @@ export default function FundList() {
   const copyToClipboard = async (address: string) => {
     try {
       await navigator.clipboard.writeText(address);
-      toast.success("주소가 복사되었습니다", {
+      toast.success("Address Copied", {
         duration: 2000,
         position: "top-center",
         style: {
@@ -51,7 +51,7 @@ export default function FundList() {
         },
       });
     } catch (err) {
-      toast.error("주소 복사에 실패했습니다", {
+      toast.error("Failed to copy address", {
         duration: 2000,
         position: "bottom-center",
       });

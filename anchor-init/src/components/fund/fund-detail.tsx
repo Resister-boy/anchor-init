@@ -16,8 +16,16 @@ export default function FundDetail() {
   const [fundInfo, setFundInfo] = useState<any>(null);
   const [solAmount, setSolAmount] = useState<number | null>(null);
   const [tokenAmount, setTokenAmount] = useState<number>(0);
-  const { fetchAllVaults, fetchFund, fundToken, swapToken, provider, program } =
-    useSolFAI();
+  const {
+    fetchAllVaults,
+    fetchFund,
+    fundToken,
+    swapToken,
+    provider,
+    program,
+    claimToken,
+    getATA,
+  } = useSolFAI();
   const wallet = useWallet();
   const params = useParams();
   const vaultId = params?.id as string;
@@ -67,6 +75,18 @@ export default function FundDetail() {
     },
   });
 
+  const fetchATAMutation = useMutation({
+    mutationKey: ["fetchATA", vaultId],
+    mutationFn: () =>
+      getATA({
+        mint: fundInfo?.account?.etfTokenMint?.toBase58() ?? "",
+        user: wallet.publicKey?.toBase58() ?? "",
+      }),
+    onSuccess: (data) => {
+      console.log("ATA address:", data?.toBase58());
+    },
+  });
+
   const fundTokenMutation = useMutation({
     mutationKey: ["fundToken", vaultId],
     mutationFn: () =>
@@ -85,7 +105,7 @@ export default function FundDetail() {
     onError: (error) => {
       console.error("Fund token error:", error);
       setIsAllocationModalOpen(false);
-      toast.error("펀딩에 실패했습니다", {
+      toast.error("Funding failed", {
         duration: 2000,
         position: "bottom-center",
       });
@@ -99,14 +119,45 @@ export default function FundDetail() {
       console.log("Swap success:", data);
       fetchAllVaultsMutation.mutate();
       fetchFundingUser.mutate();
-      toast.success("스왑이 완료되었습니다", {
+      toast.success("Swap completed successfully", {
         duration: 2000,
         position: "top-center",
       });
     },
     onError: (error) => {
       console.error("Swap error:", error);
-      toast.error("스왑에 실패했습니다", {
+      toast.error("Swap failed", {
+        duration: 2000,
+        position: "top-center",
+      });
+    },
+  });
+
+  const claimTokenMutation = useMutation({
+    mutationKey: ["claimToken", vaultId],
+    mutationFn: async () => {
+      const ataAddress = await fetchATAMutation.mutateAsync();
+      if (!ataAddress) {
+        throw new Error("ATA address not found");
+      }
+
+      return claimToken({
+        vaultId: new BN(parseInt(vaultId)),
+        mint: fundInfo?.account?.etfTokenMint?.toBase58() ?? "",
+      });
+    },
+    onSuccess: (data) => {
+      console.log("Claim success:", data);
+      fetchAllVaultsMutation.mutate();
+      fetchFundingUser.mutate();
+      toast.success("Claim completed successfully", {
+        duration: 2000,
+        position: "top-center",
+      });
+    },
+    onError: (error) => {
+      console.error("Claim error:", error);
+      toast.error("Claim failed", {
         duration: 2000,
         position: "top-center",
       });
@@ -154,7 +205,7 @@ export default function FundDetail() {
     }
 
     if (value.includes(".")) {
-      const [integer, decimal] = value.split(".");
+      const [_integer, decimal] = value.split(".");
       if (decimal.length > 3) {
         return;
       }
@@ -174,7 +225,7 @@ export default function FundDetail() {
   const copyToClipboard = async (address: string) => {
     try {
       await navigator.clipboard.writeText(address);
-      toast.success("주소가 복사되었습니다", {
+      toast.success("Address Copied", {
         duration: 2000,
         position: "top-center",
         style: {
@@ -183,7 +234,7 @@ export default function FundDetail() {
         },
       });
     } catch (err) {
-      toast.error("주소 복사에 실패했습니다", {
+      toast.error("Failed to copy address", {
         duration: 2000,
         position: "bottom-center",
       });
@@ -216,12 +267,11 @@ export default function FundDetail() {
             <div className="bg-white p-4 rounded">
               <p className="text-sm mb-1">Your Allocation</p>
               <h2 className="text-3xl font-bold">
-                {`${tokenAmount.toLocaleString()} ${
+                {`${fundInfo?.account?.mintedAmount.toNumber()} ${
                   fundInfo?.account?.etfName
                 } (${
-                  tokenAmount > 0
-                    ? Math.floor((tokenAmount / 1_000_000_000) * 100)
-                    : 0
+                  (fundInfo?.account?.mintedAmount.toNumber() / 1_000_000_000) *
+                  100
                 }%)`}
               </h2>
             </div>
@@ -257,75 +307,56 @@ export default function FundDetail() {
                 </div>
               </div>
             </div>
-
-            <div className="bg-white rounded">
-              <div className="flex justify-between items-center border-b border-gray-200 p-3">
-                <div>
-                  <p className="text-2xl text-black">
-                    {fundInfo?.account?.etfName}
-                  </p>
-                </div>
-                <div className="flex flex-col items-end">
-                  <p className="text-xs text-gray-500">you sell</p>
-                  <input
-                    type="number"
-                    min="0"
-                    max="20"
-                    step="0.001"
-                    value={solAmount === null ? "" : solAmount}
-                    onChange={(e) => handleSolInput(e.target.value)}
-                    placeholder="0"
-                    className="text-right w-24 outline-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                  />
-                </div>
-              </div>
-              <div className="flex justify-between items-center p-3">
-                <div>
-                  <p className="text-2xl text-black">SOL</p>
-                </div>
-                <div className="flex flex-col items-end">
-                  <p className="text-xs text-gray-500">you get</p>
-                  <p>{tokenAmount.toLocaleString()}</p>
-                </div>
-              </div>
-            </div>
           </div>
 
-          <div className="flex justify-end mt-4">
-            <button
-              className="bg-black text-white px-6 py-2 rounded"
-              onClick={() => {
-                if (!solAmount || solAmount <= 0) {
-                  toast.error("SOL 수량을 입력해주세요", {
-                    duration: 2000,
-                    position: "top-center",
-                  });
-                  return;
-                }
-                fundTokenMutation.mutate();
-              }}
-            >
-              ADD FUNDS
-            </button>
-            <button
-              className="bg-black text-white px-6 py-2 rounded"
-              onClick={() => {
-                if (!solAmount || solAmount <= 0) {
-                  toast.error("SOL 수량을 입력해주세요", {
-                    duration: 2000,
-                    position: "top-center",
-                  });
-                  return;
-                }
-                swapTokenMutation.mutate({
-                  vaultId: new BN(parseInt(vaultId)),
-                  user: wallet.publicKey?.toBase58() ?? "",
-                  mint: fundInfo?.account?.etfTokenMint?.toBase58() ?? "",
-                });
-              }}
-            >
-              SWAP TOKEN
-            </button>
+          <div className="flex justify-end mt-4 space-x-2">
+            {fundInfo?.account?.status === 1 ? (
+              <button
+                className="bg-black text-white px-6 py-2 rounded"
+                onClick={() => {
+                  claimTokenMutation.mutate();
+                }}
+              >
+                CLAIM
+              </button>
+            ) : (
+              <>
+                <button
+                  className="bg-black text-white px-6 py-2 rounded"
+                  onClick={() => {
+                    if (!solAmount || solAmount <= 0) {
+                      toast.error("Please enter SOL amount", {
+                        duration: 2000,
+                        position: "top-center",
+                      });
+                      return;
+                    }
+                    fundTokenMutation.mutate();
+                  }}
+                >
+                  ADD FUNDS
+                </button>
+                <button
+                  className="bg-black text-white px-6 py-2 rounded"
+                  onClick={() => {
+                    if (!solAmount || solAmount <= 0) {
+                      toast.error("Please enter SOL amount", {
+                        duration: 2000,
+                        position: "top-center",
+                      });
+                      return;
+                    }
+                    swapTokenMutation.mutate({
+                      vaultId: new BN(parseInt(vaultId)),
+                      user: wallet.publicKey?.toBase58() ?? "",
+                      mint: fundInfo?.account?.etfTokenMint?.toBase58() ?? "",
+                    });
+                  }}
+                >
+                  SWAP TOKEN
+                </button>
+              </>
+            )}
           </div>
         </div>
       </div>
