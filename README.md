@@ -21,3 +21,15 @@ BhJaivSr483tJ2PqodLwZvE85hyRaUUWssqZyYhbqfFX, [SOLSCAN](https://solscan.io/accou
 
 - State
 ![image](https://github.com/user-attachments/assets/d6c80f17-2e24-4a5c-8328-a6deaa9dda73)
+
+### Directory Structure
+```text
+  .
+  ├── anchor / # include anchor framework based solana program
+  | ├── programs / # source code
+  | ├── tests / # test code
+  ├── public / # include idl of solana program
+  ├── src / # include client code based next.js
+
+  └── README.md
+```
