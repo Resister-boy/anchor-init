@@ -220,8 +220,11 @@ export default function FundDetail() {
     }
     setSolAmount(parsedAmount);
 
-    const tokenPerSol = 50_000_000;
-    const calculatedTokens = parsedAmount * tokenPerSol;
+    console.log(solAmount);
+
+    const calculatedTokens = fundingGoal
+      ? (parsedAmount * 1_000_000_000) / fundingGoal
+      : 0;
     setTokenAmount(calculatedTokens);
   };
 
