@@ -1,94 +1,25 @@
-# anchor-init
+### AIShares 2025 Solana Bootcamp Submission Repository
 
-## Getting Started
+> This repository is for submission for the 2025 Solana Bootcamp. This repository contains Solana Program code based on the Anchor Framework(Rust) and a Next.js(Typescript) based client code to interact with the above Solana Program. AIShare receives users' investment strategies to generate unique trading-specialized AI agents. These AI agents are tokenized by funding them, allowing token holders to share in the profits earned through the AI agents' trading activities. This repository includes the following features:
 
-### Prerequisites
+1. Users can enter your investment strategy to create an AI agent along with its corresponding Fund and Token.
+2. Users can transfer SOL to the Fund, and once the Fund is fully funded, they can claim and receive the Token corresponding to the AI agent.
+3. Users can exchange the Token back to SOL.
 
-- Node v18.18.0 or higher
+### Deploy Program
+> Fund Factory Program that creates Funds.
+BhJaivSr483tJ2PqodLwZvE85hyRaUUWssqZyYhbqfFX, [SOLSCAN](https://solscan.io/account/BhJaivSr483tJ2PqodLwZvE85hyRaUUWssqZyYhbqfFX?cluster=devnet)
 
-- Rust v1.77.2 or higher
-- Anchor CLI 0.30.1 or higher
-- Solana CLI 1.18.17 or higher
+### Deploy DEMO
+[DEMO](https://ai-shares.vercel.app)
 
-### Installation
+### Program Entities
 
-#### Clone the repo
+<img width="982" alt="image" src="https://github.com/user-attachments/assets/3d2f6cb7-fa3b-4dab-86ea-4961baa3b579" />
 
-```shell
-git clone <repo-url>
-cd <repo-name>
-```
+### Diagram 
+- Architecture
+![image](https://github.com/user-attachments/assets/d1ea1bf2-9499-4298-b08d-436931c27501)
 
-#### Install Dependencies
-
-```shell
-pnpm install
-```
-
-#### Start the web app
-
-```
-pnpm dev
-```
-
-## Apps
-
-### anchor
-
-This is a Solana program written in Rust using the Anchor framework.
-
-#### Commands
-
-You can use any normal anchor commands. Either move to the `anchor` directory and run the `anchor` command or prefix the command with `pnpm`, eg: `pnpm anchor`.
-
-#### Sync the program id:
-
-Running this command will create a new keypair in the `anchor/target/deploy` directory and save the address to the Anchor config file and update the `declare_id!` macro in the `./src/lib.rs` file of the program.
-
-You will manually need to update the constant in `anchor/lib/counter-exports.ts` to match the new program id.
-
-```shell
-pnpm anchor keys sync
-```
-
-#### Build the program:
-
-```shell
-pnpm anchor-build
-```
-
-#### Start the test validator with the program deployed:
-
-```shell
-pnpm anchor-localnet
-```
-
-#### Run the tests
-
-```shell
-pnpm anchor-test
-```
-
-#### Deploy to Devnet
-
-```shell
-pnpm anchor deploy --provider.cluster devnet
-```
-
-### web
-
-This is a React app that uses the Anchor generated client to interact with the Solana program.
-
-#### Commands
-
-Start the web app
-
-```shell
-pnpm dev
-```
-
-Build the web app
-
-```shell
-pnpm build
-```
+- State
+![image](https://github.com/user-attachments/assets/d6c80f17-2e24-4a5c-8328-a6deaa9dda73)
