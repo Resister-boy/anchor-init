@@ -117,10 +117,16 @@ export default function FundList() {
                       className={`px-2 py-1 rounded text-xs ${
                         fund.account?.status === 1
                           ? "bg-blue-400 text-black"
+                          : fund.account?.status === 2
+                          ? "bg-red-400 text-white"
                           : "bg-yellow-400 text-black"
                       }`}
                     >
-                      {fund.account?.status === 1 ? "Launched" : "Raising"}
+                      {fund.account?.status === 1
+                        ? "Launched"
+                        : fund.account?.status === 2
+                        ? "Terminated"
+                        : "Raising"}
                     </span>
                   </td>
                   <td className="p-2 text-center border border-gray-300">
@@ -180,6 +186,10 @@ export default function FundList() {
                           CHECK ALLOCATION
                         </button>
                       </Link>
+                    ) : fund.account?.status === 2 ? (
+                      <button className="bg-gray-300 text-gray-600 px-4 py-1 rounded cursor-not-allowed">
+                        TERMINATED
+                      </button>
                     ) : (
                       <Link
                         href={`/fund/detail/${fund.account?.id?.toNumber()}`}
